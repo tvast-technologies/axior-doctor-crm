@@ -47,7 +47,8 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
   });
 
   const emailOrPhone = watch('email');
-  const isPhoneNumber = /^[0-9]{8,15}$/.test(emailOrPhone || '');
+  // const isPhoneNumber = /^[0-9]{8,15}$/.test(emailOrPhone || '');
+  const isPhoneNumber = true;
 
   const handleLoginSumbit = async (data: LoginFormValues) => {
     const res = await handleLogin(data);
@@ -163,15 +164,15 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
 
             <TextField
               fullWidth
-              label="Phone or Email"
+              label="Phone"
               {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message}
-              defaultValue={defaultCredential?.email}
+              defaultValue={""}
               sx={{ mb: 3 }}
             />
 
-              {!isPhoneNumber&&
+              {/* {!isPhoneNumber&&
               (<PasswordTextField
                 fullWidth
                 label="Password"
@@ -180,7 +181,7 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
                 error={!!errors.password}
                 helperText={errors.password?.message}
                 sx={{ mb: 3 }}
-              />)}
+              />)} */}
 
             {isPhoneNumber && otpSent && (
               <TextField

@@ -119,7 +119,7 @@ const LoginForm = ({
               alignItems: { xs: 'flex-start', sm: 'flex-end' },
             }}
           >
-            <Typography variant="h4">Welcome Doctor</Typography>
+            <Typography variant="h4">Welcome Doctor!</Typography>
             <Typography
               variant="subtitle2"
               sx={{
