@@ -126,7 +126,6 @@ const EventDetailsSection = ({ eventType, errors }: EventDetailsSectionProps) =>
                       },
                     }}
                     value={!isDoctor && "Doctor1"}
-                    disabled={!isDoctor}
                     sx={{ flexGrow: 1 }}
                     {...params}
                   />
