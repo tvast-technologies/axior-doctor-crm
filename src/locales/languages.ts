@@ -14,8 +14,10 @@ export const languages: SupportedLanguage[] = [
     shortLabel: 'eng',
     icon: 'twemoji:flag-united-kingdom',
     locale: 'en-US',
-    currency: 'USD',
-    currencySymbol: '$',
+    // currency: 'USD',
+    // currencySymbol: '$',
+    currency: 'INR',
+    currencySymbol: '₹',
   },
   {
     label: 'Française',
