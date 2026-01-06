@@ -1,31 +1,55 @@
 'use client';
 
-import { Button, Chip } from '@mui/material';
+import { useState } from 'react';
+import {
+  Button,
+  Chip,
+  Dialog,
+  Stack,
+  Typography,
+} from '@mui/material';
 import Box from '@mui/material/Box';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { type Deal as DealType } from 'data/crm/lead-details';
 import dayjs from 'dayjs';
+import { type Deal as DealType } from 'data/crm/lead-details';
 import useNumberFormat from 'hooks/useNumberFormat';
-import { useBreakpoints } from 'providers/BreakpointsProvider';
 import paths from 'routes/paths';
-import IconifyIcon from 'components/base/IconifyIcon';
 
 const Deal = ({ deal }: { deal: DealType }) => {
   const { currencyFormat } = useNumberFormat();
-  const { currentBreakpoint } = useBreakpoints();
+
+  const [open, setOpen] = useState(false);
+  const [rescheduled, setRescheduled] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+
+  const handlePayNow = () => {
+    setStep(2); // Payment successful step
+  };
+
+  const handleConfirmReschedule = () => {
+    setRescheduled(true);
+    setOpen(false);
+    setStep(1); // reset for next time dialog opens
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setStep(1);
+  };
 
   return (
     <Box
       sx={{
         p: 2,
         borderRadius: 2,
-        bgcolor: deal.closingDate === 'closed' ? 'background.elevation2' : 'background.elevation1',
+        bgcolor:
+          deal.closingDate === 'closed'
+            ? 'background.elevation2'
+            : 'background.elevation1',
       }}
     >
-      <Stack direction="column" gap={4}>
+      <Stack direction="column" gap={3}>
+        {/* Deal Info */}
         <div>
           <Typography
             variant="body2"
@@ -35,6 +59,7 @@ const Deal = ({ deal }: { deal: DealType }) => {
           >
             {deal.name}
           </Typography>
+
           <Stack
             gap={1}
             sx={{
@@ -54,9 +79,14 @@ const Deal = ({ deal }: { deal: DealType }) => {
                 useGrouping: true,
               })}
             </Typography>
-            <Typography component={Stack} variant="body2" gap={0.5} sx={{ alignItems: 'center' }}>
+            <Typography
+              component={Stack}
+              variant="body2"
+              gap={0.5}
+              sx={{ alignItems: 'center' }}
+            >
               <Box component="span" sx={{ fontWeight: 600 }}>
-                Closing Date:
+                Last booking Date:
               </Box>{' '}
               {deal.closingDate === 'closed' ? (
                 <Chip label="Closed" color="neutral" variant="soft" />
@@ -66,11 +96,14 @@ const Deal = ({ deal }: { deal: DealType }) => {
             </Typography>
           </Stack>
         </div>
-        <ButtonGroup
-          orientation={
-            currentBreakpoint === 'xs' || currentBreakpoint === 'lg' ? 'vertical' : 'horizontal'
-          }
-          sx={{ gap: 0.25 }}
+
+        {/* Phase Buttons */}
+        <Stack
+          direction={{
+            xs: 'column',
+            sm: 'row',
+          }}
+          spacing={1}
         >
           {deal.phases.map((phase) => (
             <Button
@@ -82,13 +115,17 @@ const Deal = ({ deal }: { deal: DealType }) => {
                 phase.status === 'done'
                   ? 'success'
                   : phase.status === 'ongoing'
-                    ? 'primary'
-                    : 'neutral'
+                  ? 'primary'
+                  : 'neutral'
               }
-              fullWidth
+              fullWidth={false}
               endIcon={
                 phase.status === 'done' && (
-                  <IconifyIcon icon="material-symbols:check-circle-outline-rounded" />
+                  <span
+                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                  >
+                    ✓
+                  </span>
                 )
               }
               sx={{ height: 46 }}
@@ -96,8 +133,72 @@ const Deal = ({ deal }: { deal: DealType }) => {
               {phase.name}
             </Button>
           ))}
-        </ButtonGroup>
+        </Stack>
+
+        {/* Reschedule Button */}
+        <Button
+          variant={rescheduled ? 'outlined' : 'contained'}
+          color="primary"
+          onClick={() => setOpen(true)}
+          disabled={rescheduled}
+        >
+          {rescheduled ? 'Confirmed Rescheduled' : 'Reschedule'}
+        </Button>
       </Stack>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <Box p={3} minWidth={320}>
+          {step === 1 && (
+            <>
+              <Typography variant="h6" mb={2}>
+                Confirm Reschedule
+              </Typography>
+
+              <Typography mb={3}>
+                Are you sure you want to reschedule for{' '}
+                <strong>
+                  {currencyFormat(deal.budget, {
+                    style: 'currency',
+                    maximumFractionDigits: 0,
+                  })}
+                </strong>
+                ?
+              </Typography>
+
+              <Stack direction="row" spacing={1}>
+                <Button variant="outlined" fullWidth onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="contained" fullWidth onClick={handlePayNow}>
+                  Pay Now
+                </Button>
+              </Stack>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <Typography variant="h6" mb={3} color="success.main">
+                Payment Successful 🎉
+              </Typography>
+
+              <Stack direction="row" spacing={1}>
+                <Button variant="outlined" fullWidth onClick={handleClose}>
+                  Close
+                </Button>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={handleConfirmReschedule}
+                >
+                  Confirm Reschedule
+                </Button>
+              </Stack>
+            </>
+          )}
+        </Box>
+      </Dialog>
     </Box>
   );
 };

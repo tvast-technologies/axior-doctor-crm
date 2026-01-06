@@ -13,10 +13,10 @@ import PageBreadcrumb from 'components/sections/common/PageBreadcrumb';
 import StyledTextField from 'components/styled/StyledTextField';
 
 const breadcrumbItems: PageBreadcrumbItem[] = [
-  {
-    label: 'Home',
-    url: '/',
-  },
+  // {
+  //   label: 'Home',
+  //   url: '/',
+  // },
   {
     label: 'Patient',
     url: paths.booking_status,

@@ -13,115 +13,70 @@ export const UPDATE_EVENT = 'UPDATE_EVENT';
 export const UPDATE_TASK = 'UPDATE_TASK';
 
 export type CALENDAR_ACTION_TYPE =
-  | {
-      type: typeof SET_CALENDAR_STATE;
-      payload: Partial<CalendarState>;
-    }
-  | {
-      type: typeof INITIALIZE_CALENDAR;
-      payload: CalendarApi;
-    }
-  | {
-      type: typeof INITIALIZE_SCHEDULER;
-      payload: CalendarApi;
-    }
-  | {
-      type: typeof HANDLE_SELECT;
-      payload: { startDate: string; endDate: string };
-    }
-  | {
-      type: typeof ADD_NEW_EVENT;
-      payload: CalendarEvent;
-    }
-  | {
-      type: typeof ADD_NEW_TASK;
-      payload: CalendarEvent;
-    }
-  | {
-      type: typeof SELECT_EVENT;
-      payload: CalendarEvent;
-    }
-  | {
-      type: typeof UPDATE_EVENT;
-      payload: CalendarEvent;
-    }
-  | {
-      type: typeof UPDATE_TASK;
-      payload: CalendarEvent;
-    };
+  | { type: typeof SET_CALENDAR_STATE; payload: Partial<CalendarState> }
+  | { type: typeof INITIALIZE_CALENDAR; payload: CalendarApi }
+  | { type: typeof INITIALIZE_SCHEDULER; payload: CalendarApi }
+  | { type: typeof HANDLE_SELECT; payload: { startDate: string; endDate: string } }
+  | { type: typeof ADD_NEW_EVENT; payload: CalendarEvent }
+  | { type: typeof ADD_NEW_TASK; payload: CalendarEvent }
+  | { type: typeof SELECT_EVENT; payload: CalendarEvent }
+  | { type: typeof UPDATE_EVENT; payload: CalendarEvent }
+  | { type: typeof UPDATE_TASK; payload: CalendarEvent };
+
+const persistCalendar = (events: any[], tasks: any[]) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('calendar-data', JSON.stringify({ events, tasks }));
+  }
+};
 
 export const calendarReducer = (state: CalendarState, action: CALENDAR_ACTION_TYPE) => {
   switch (action.type) {
-    case SET_CALENDAR_STATE: {
+    case SET_CALENDAR_STATE:
       return { ...state, ...action.payload };
-    }
-    case INITIALIZE_CALENDAR: {
-      const { payload } = action;
 
-      return {
-        ...state,
-        calendarApi: payload,
-      };
-    }
-    case INITIALIZE_SCHEDULER: {
-      return {
-        ...state,
-        schedulerApi: action.payload,
-      };
-    }
-    case HANDLE_SELECT: {
-      const { payload } = action;
+    case INITIALIZE_CALENDAR:
+      return { ...state, calendarApi: action.payload };
 
+    case INITIALIZE_SCHEDULER:
+      return { ...state, schedulerApi: action.payload };
+
+    case HANDLE_SELECT:
       return {
         ...state,
         openNewEventModal: true,
-        selectedStartDate: payload.startDate,
-        selectedEndDate: payload.endDate,
+        selectedStartDate: action.payload.startDate,
+        selectedEndDate: action.payload.endDate,
         selectedItem: null,
       };
-    }
 
     case ADD_NEW_EVENT: {
-      const { payload } = action;
-      state.calendarApi?.addEvent(payload);
-
-      return {
-        ...state,
-        events: [...state.events, payload],
-        openNewEventModal: false,
-      };
+      const events = [...state.events, action.payload];
+      persistCalendar(events, state.tasks);
+      state.calendarApi?.addEvent(action.payload);
+      return { ...state, events, openNewEventModal: false };
     }
+
     case ADD_NEW_TASK: {
-      const { payload } = action;
-      state.calendarApi?.addEvent(payload);
+      const tasks = [...state.tasks, action.payload];
+      persistCalendar(state.events, tasks);
+      state.calendarApi?.addEvent(action.payload);
+      return { ...state, tasks, openNewEventModal: false };
+    }
 
-      return {
-        ...state,
-        tasks: [...state.tasks, payload],
-        openNewEventModal: false,
-      };
+    case SELECT_EVENT:
+      return { ...state, selectedItem: action.payload, openNewEventModal: true };
+
+    case UPDATE_EVENT: {
+      const events = state.events.map((e) => (e.id === action.payload.id ? action.payload : e));
+      persistCalendar(events, state.tasks);
+      return { ...state, events, openNewEventModal: false };
     }
-    case SELECT_EVENT: {
-      return {
-        ...state,
-        selectedItem: action.payload,
-        openNewEventModal: true,
-      };
+
+    case UPDATE_TASK: {
+      const tasks = state.tasks.map((t) => (t.id === action.payload.id ? action.payload : t));
+      persistCalendar(state.events, tasks);
+      return { ...state, tasks, openNewEventModal: false };
     }
-    case UPDATE_EVENT:
-      return {
-        ...state,
-        events: state.events.map((event) =>
-          event.id === action.payload.id ? action.payload : event,
-        ),
-        openNewEventModal: false,
-      };
-    case UPDATE_TASK:
-      return {
-        ...state,
-        tasks: state.tasks.map((task) => (task.id === action.payload.id ? action.payload : task)),
-        openNewEventModal: false,
-      };
 
     default:
       return state;

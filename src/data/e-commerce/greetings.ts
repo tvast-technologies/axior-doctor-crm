@@ -31,7 +31,7 @@ export const stats: Stat[] = [
   },
   {
     icon: 'material-symbols-light:request-quote-outline-rounded',
-    value: '$100M',
+    value: '₹100M',
     subtitle: 'Earnings',
   },
   {

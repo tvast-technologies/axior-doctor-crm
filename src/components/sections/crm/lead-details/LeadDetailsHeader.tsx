@@ -13,14 +13,33 @@ import paths from 'routes/paths';
 import IconifyIcon from 'components/base/IconifyIcon';
 import PageBreadcrumb from 'components/sections/common/PageBreadcrumb';
 import CRMDropdownMenu from '../common/CRMDropdownMenu';
+import { useRouter } from 'next/navigation';
 
 const LeadDetailsHeader = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [starred, setStarred] = useState(false);
   const { down } = useBreakpoints();
+  const router = useRouter();
 
   const downSm = down('sm');
   const downMd = down('md');
+
+  const patientData = {
+    personalInfo: {
+      firstName: 'Patient1',
+      lastName: ' ',
+      personalEmail: 'patient1@test.com',
+      phoneNumber: '1234567890',
+      profileImage: users[6].avatar
+    },
+    companyInfo: {},
+    leadInfo: {},
+  };
+
+  const handleEdit = () => {
+    localStorage.setItem('editContact', JSON.stringify(patientData));
+    router.push(paths.addContact);
+  };
 
   return (
     <Paper background={1} sx={{ px: { xs: 3, md: 5 }, py: 3 }}>
@@ -28,11 +47,12 @@ const LeadDetailsHeader = () => {
         <Stack direction="column" gap={2}>
           <PageBreadcrumb
             items={[
-              { label: 'Home', url: paths.crm },
+              // { label: 'Home', url: paths.crm },
               { label: 'Patient Details', active: true },
             ]}
             sx={{ mb: 2 }}
           />
+
           <Stack gap={{ xs: 1, md: 2 }} sx={{ alignItems: 'center' }}>
             <Avatar
               src={users[6].avatar}
@@ -43,6 +63,7 @@ const LeadDetailsHeader = () => {
               <Typography variant="h4" sx={{ fontSize: { xs: 20, md: 28 } }}>
                 Patient 1
               </Typography>
+
               <Button
                 shape="square"
                 size={downMd ? 'medium' : 'large'}
@@ -51,18 +72,23 @@ const LeadDetailsHeader = () => {
               >
                 <IconifyIcon
                   icon="material-symbols:star-rate-rounded"
-                  sx={{ fontSize: 24, color: starred ? 'warning.main' : 'background.elevation4' }}
+                  sx={{
+                    fontSize: 24,
+                    color: starred ? 'warning.main' : 'background.elevation4',
+                  }}
                 />
               </Button>
             </Stack>
           </Stack>
         </Stack>
+
         <Stack gap={1}>
           <Button
             variant="soft"
             shape={downSm ? 'square' : undefined}
             color="neutral"
             sx={{ gap: 0.5 }}
+            onClick={handleEdit}
           >
             <IconifyIcon icon="material-symbols:edit-outline" />
             <Box component="span" sx={{ display: { xs: 'none', sm: 'block' } }}>

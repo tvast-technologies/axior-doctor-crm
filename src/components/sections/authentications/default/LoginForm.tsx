@@ -57,7 +57,7 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
       router.refresh();
       router.push(
         data.email == 'patient@gmail.com'
-          ? '/apps/calendar'
+          ? '/apps/book-event'
           : callbackUrl
             ? callbackUrl
             : rootPaths.root,

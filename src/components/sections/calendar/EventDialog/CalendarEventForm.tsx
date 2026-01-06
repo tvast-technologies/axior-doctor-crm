@@ -74,7 +74,7 @@ const CalendarEventForm = () => {
           helperText={errors.title?.message}
           {...register('title')}
         />
-        <Stack
+        {/* <Stack
           spacing={1}
           sx={{
             width: 1,
@@ -153,13 +153,13 @@ const CalendarEventForm = () => {
               </StyledTextField>
             )}
           />
-        </Stack>
+        </Stack> */}
 
         <EventDateTimePicker name="start" label="Start" isAllDay={isAllDay} errors={errors} />
         <EventDateTimePicker name="end" label="End" isAllDay={isAllDay} errors={errors} />
       </Stack>
 
-      <EventDetailsSection eventType={eventType} errors={errors} />
+      {/* <EventDetailsSection eventType={eventType} errors={errors} /> */}
 
       <StyledTextField
         fullWidth

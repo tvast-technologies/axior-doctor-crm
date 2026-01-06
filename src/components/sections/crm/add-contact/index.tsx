@@ -1,19 +1,26 @@
-import { Button, Paper, Stack } from '@mui/material';
+"use client";
+
+import { useEffect, useState } from 'react';
+import { Paper } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import paths from 'routes/paths';
-import IconifyIcon from 'components/base/IconifyIcon';
 import AddContactStepper from 'components/sections/crm/add-contact/AddContactStepper';
 import PageHeader from 'components/sections/ecommerce/admin/common/PageHeader';
 
 const AddContact = () => {
+  const [data, setData] = useState({});
+  useEffect(() => {
+    const storedData = localStorage.getItem('editContact');
+    setData(storedData ? JSON.parse(storedData) : null);
+  }, []);
   return (
     <Grid container>
       <Grid size={12}>
         <PageHeader
           title="Add New Patient"
           breadcrumb={[
-            { label: 'Home', url: paths.crm },
-            { label: 'New Patient', active: true },
+            { label: data ? 'Patient Details' : 'Home', url: data ? paths.leadDetails : paths.crm },
+            { label: data ? 'Edit Patient' : 'New Patient', active: true },
           ]}
           // actionComponent={
           //   <Stack gap={1}>

@@ -58,13 +58,13 @@ const sitemap: MenuItem[] = [
         icon: 'material-symbols:phone-in-talk-outline-rounded',
         active: true,
         items: [
-          {
-            name: 'Booking status',
-            key: 'Booking status',
-            path: paths.booking_status,
-            pathName: 'deals',
-            active: true,
-          },
+          // {
+          //   name: 'Booking status',
+          //   key: 'Booking status',
+          //   path: paths.booking_status,
+          //   pathName: 'deals',
+          //   active: true,
+          // },
           {
             name: 'Patient details',
             key: 'Patient details',
@@ -84,7 +84,7 @@ const sitemap: MenuItem[] = [
           {
             name: 'Calendar',
             key: 'calendar',
-            path: paths.calendar,
+            path: paths.book_event,
             pathName: 'calendar',
             icon: 'material-symbols:calendar-month-outline',
             active: true,
@@ -107,11 +107,18 @@ const sitemap: MenuItem[] = [
         icon: 'material-symbols:phone-in-talk-outline-rounded',
         active: true,
         items: [
+          // {
+          //   name: 'Booking status',
+          //   key: 'Booking status',
+          //   path: paths.booking_status,
+          //   pathName: 'deals',
+          //   active: true,
+          // },
           {
-            name: 'Booking status',
-            key: 'Booking status',
-            path: paths.booking_status,
-            pathName: 'deals',
+            name: 'Patients List',
+            key: 'Patients List',
+            path: paths.patients_list,
+            pathName: 'patients-list',
             active: true,
           },
           {

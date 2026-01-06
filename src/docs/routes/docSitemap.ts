@@ -5,6 +5,7 @@ const docSitemap: MenuItem[] = [
   {
     id: 'documentation',
     subheader: 'Docs',
+    access: 'doctor',
     icon: 'material-symbols:description-outline-rounded',
     items: [
       {

@@ -36,6 +36,7 @@ const paths = {
   doctor_login: `/${rootPaths.authRoot}/${rootPaths.authDefaultJwtRoot}/login-doctor`,
 
   booking_status: `/${rootPaths.appsRoot}/${rootPaths.patient}/booking-status`,
+  book_event: `/${rootPaths.appsRoot}/book-event`,
 
   ecommerce: `/${rootPaths.dashboardRoot}/ecommerce`,
   crm: `/${rootPaths.dashboardRoot}/crm`,
@@ -109,6 +110,7 @@ const paths = {
   dealDetails: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/deal-details`,
   addContact: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/add-contact`,
   deals: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/deals`,
+  patients_list: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/patients-list`,
 
   chat: `/${rootPaths.appsRoot}/chat`,
   newChat: `/${rootPaths.appsRoot}/chat/new`,

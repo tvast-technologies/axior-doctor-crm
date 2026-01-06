@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, Dispatch, PropsWithChildren, use, useContext, useReducer } from 'react';
+import { createContext, Dispatch, PropsWithChildren, useReducer, useContext } from 'react';
 import { CalendarApi } from '@fullcalendar/core';
 import { eventList, taskList } from 'data/calendar';
 import {
@@ -33,7 +33,20 @@ interface CalendarContextInterface extends CalendarState {
 
 export const CalendarContext = createContext({} as CalendarContextInterface);
 
+const getStoredCalendarData = () => {
+  if (typeof window === 'undefined') return { events: eventList, tasks: taskList };
+  try {
+    const stored = localStorage.getItem('calendar-data');
+    if (!stored) return { events: eventList, tasks: taskList };
+    return JSON.parse(stored);
+  } catch {
+    return { events: eventList, tasks: taskList };
+  }
+};
+
 const CalendarProvider = ({ children }: PropsWithChildren) => {
+  const storedData = getStoredCalendarData();
+
   const initialState: CalendarState = {
     calendarApi: null,
     schedulerApi: null,
@@ -43,8 +56,8 @@ const CalendarProvider = ({ children }: PropsWithChildren) => {
     openNewEventModal: false,
     selectedStartDate: '',
     selectedEndDate: '',
-    events: eventList,
-    tasks: taskList,
+    events: storedData.events,
+    tasks: storedData.tasks,
   };
 
   const [calendarState, calendarDispatch] = useReducer(calendarReducer, initialState);
@@ -69,7 +82,7 @@ const CalendarProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <CalendarContext
+    <CalendarContext.Provider
       value={{
         ...calendarState,
         calendarDispatch,
@@ -78,10 +91,10 @@ const CalendarProvider = ({ children }: PropsWithChildren) => {
       }}
     >
       {children}
-    </CalendarContext>
+    </CalendarContext.Provider>
   );
 };
 
-export const useCalendarContext = () => use(CalendarContext);
+export const useCalendarContext = () => useContext(CalendarContext);
 
 export default CalendarProvider;

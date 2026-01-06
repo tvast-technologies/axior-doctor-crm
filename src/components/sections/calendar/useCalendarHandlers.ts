@@ -9,7 +9,6 @@ import { useCalendarContext } from 'providers/CalendarProvider';
 import {
   HANDLE_SELECT,
   SELECT_EVENT,
-  SET_CALENDAR_STATE,
   UPDATE_EVENT,
   UPDATE_TASK,
 } from 'reducers/CalendarReducer';
@@ -19,10 +18,9 @@ const useCalendarHandlers = () => {
   const { vars } = useTheme();
 
   const getCategoryColor = useCallback(
-    (category: string | undefined): string => {
+    (category?: string): string => {
       if (!category) return vars.palette.primary.main;
       const colorKey = categoryColorMap[category];
-
       return colorKey ? vars.palette[colorKey].main : vars.palette.error.main;
     },
     [vars.palette],
@@ -45,11 +43,6 @@ const useCalendarHandlers = () => {
         endDate: endDate.format('YYYY-MM-DD HH:mm:ss'),
       },
     });
-
-    calendarDispatch({
-      type: SET_CALENDAR_STATE,
-      payload: { openNewEventModal: true },
-    });
   };
 
   const handleEventClick = (info: EventClickArg) => {
@@ -63,9 +56,7 @@ const useCalendarHandlers = () => {
         id: info.event.id,
         title: info.event.title,
         start: dayjs(info.event.start).format('YYYY-MM-DD HH:mm:ss'),
-        end: dayjs(info.event.end ? info.event.end : info.event.start).format(
-          'YYYY-MM-DD HH:mm:ss',
-        ),
+        end: dayjs(info.event.end ?? info.event.start).format('YYYY-MM-DD HH:mm:ss'),
         allDay: info.event.allDay,
         ...info.event.extendedProps,
       },
@@ -74,7 +65,6 @@ const useCalendarHandlers = () => {
 
   const handleEventDrop = (info: EventDropArg) => {
     const { event } = info;
-
     const updatedItem = {
       id: event.id,
       title: event.title,
@@ -83,7 +73,6 @@ const useCalendarHandlers = () => {
       allDay: event.allDay,
       ...event.extendedProps,
     };
-
     if (event.extendedProps.selectedList) {
       calendarDispatch({ type: UPDATE_TASK, payload: updatedItem });
     } else {
@@ -108,13 +97,7 @@ const useCalendarHandlers = () => {
     ];
   }, [events, tasks, getCategoryColor, vars.palette]);
 
-  return {
-    calendarEvents,
-    handleDateSelect,
-    handleEventClick,
-    getCategoryColor,
-    handleEventDrop,
-  };
+  return { calendarEvents, handleDateSelect, handleEventClick, handleEventDrop, getCategoryColor };
 };
 
 export default useCalendarHandlers;

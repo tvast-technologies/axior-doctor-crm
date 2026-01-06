@@ -68,8 +68,8 @@ const CalendarSidebarPanel = () => {
           }}
         />
       </Box>
-      <CalendarFilters />
-      <CategoryList />
+      {/* <CalendarFilters />
+      <CategoryList /> */}
     </Stack>
   );
 };

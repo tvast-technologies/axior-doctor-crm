@@ -31,6 +31,12 @@ const App = ({
     window.scrollTo(0, 0);
     document.body.style.overscrollBehavior = isShowcase ? 'none' : '';
 
+    const storedData = localStorage.getItem('editContact');
+
+    if (storedData) {
+      localStorage.removeItem('editContact');
+    }
+
     return () => {
       document.body.style.overscrollBehavior = '';
     };

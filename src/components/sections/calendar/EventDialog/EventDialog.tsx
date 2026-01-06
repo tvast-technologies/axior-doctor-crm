@@ -7,13 +7,13 @@ import {
   Dialog,
   dialogClasses,
   DialogContent,
-  DialogTitle,
-  dialogTitleClasses,
+  // DialogTitle,
+  // dialogTitleClasses,
   IconButton,
   Stack,
-  ToggleButton,
-  toggleButtonClasses,
-  ToggleButtonGroup,
+  // ToggleButton,
+  // toggleButtonClasses,
+  // ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import { useCalendarContext } from 'providers/CalendarProvider';
@@ -32,27 +32,27 @@ interface EventDialogProps {
 export const calendarEventSchema = yup
   .object({
     title: yup.string().required('This field is required'),
-    category: yup.string().required('This field is required'),
+    // category: yup.string().required('This field is required'),
     start: yup.mixed<Date | string>().required('This field is required'),
     end: yup.mixed<Date | string>().nullable().required('This field is required'),
-    eventType: yup.string().required('This field is required'),
-    url: yup.string(),
-    location: yup.string(),
+    // eventType: yup.string().required('This field is required'),
+    // url: yup.string(),
+    // location: yup.string(),
     description: yup.string(),
-    allDay: yup.boolean().default(false),
-    notifyInMinutes: yup.number(),
+    // allDay: yup.boolean().default(false),
+    // notifyInMinutes: yup.number(),
   })
   .required() as yup.ObjectSchema<CalendarEvent>;
 
 export const calendarTaskSchema = yup
   .object({
     title: yup.string().required('This field is required'),
-    selectedList: yup.string().required('This field is required'),
+    // selectedList: yup.string().required('This field is required'),
     start: yup.mixed<Date | string>().required('Start date is required'),
     end: yup.mixed<Date | string>().nullable().required('This field is required'),
-    repeated: yup.string(),
+    // repeated: yup.string(),
     description: yup.string(),
-    allDay: yup.boolean().default(false),
+    // allDay: yup.boolean().default(false),
   })
   .required() as yup.ObjectSchema<CalendarTask>;
 
