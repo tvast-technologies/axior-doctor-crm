@@ -79,7 +79,7 @@ export const currencyFormat = (
   }).format(amount);
 };
 
-export const getCurrencySymbol = (currency: string, locale: Intl.LocalesArgument = 'en-US') => {
+export const getCurrencySymbol = (currency: string, locale: Intl.LocalesArgument = 'en-IN') => {
   const parts = new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
@@ -87,7 +87,7 @@ export const getCurrencySymbol = (currency: string, locale: Intl.LocalesArgument
     .formatToParts(0)
     .find((x) => x.type === 'currency');
 
-  return parts ? parts.value : '$';
+  return parts ? parts.value : '₹'; // Fallback to Indian Rupee symbol if needed
 };
 
 export const getNumbersInRange = (startAt: number, endAt: number) => {
