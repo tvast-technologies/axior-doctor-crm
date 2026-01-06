@@ -15,7 +15,7 @@ import { plusJakartaSans, splineSansMono } from 'theme/typography';
 import App from './App';
 
 export const metadata: Metadata = {
-  title: 'Aurora',
+  title: 'Axior Doctor CRM',
   description: 'Admin Dashboard and Web App Template',
   icons: [
     {
