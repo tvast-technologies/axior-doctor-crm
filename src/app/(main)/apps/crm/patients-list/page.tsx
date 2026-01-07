@@ -9,7 +9,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Paper,
   Stack,
   TextField,
@@ -17,6 +16,8 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { users } from 'data/users';
+
+type ActionType = 'whatsapp' | 'email' | 'prescription';
 
 const patients = [
   {
@@ -87,26 +88,29 @@ const patients = [
 ];
 
 const PatientsBoard = () => {
+  const [open, setOpen] = useState(false);
+  const [actionType, setActionType] = useState<ActionType | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [showPrescriptionBox, setShowPrescriptionBox] = useState(false);
-  const [prescription, setPrescription] = useState('');
+  const [message, setMessage] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleClose = () => {
-    setDialogOpen(false);
-    setShowPrescriptionBox(false);
-    setPrescription('');
-    setSuccessMsg('');
-    setSelectedPatient(null);
+  const handleOpen = (patient: any, action: ActionType) => {
+    setSelectedPatient(patient);
+    setActionType(action);
+    setOpen(true);
   };
 
-  const handleSendPrescription = () => {
-    setSuccessMsg(
-      `Prescription sent to ${selectedPatient.personalInfo.firstName}`,
-    );
-    setPrescription('');
-    setShowPrescriptionBox(false);
+  const handleClose = () => {
+    setOpen(false);
+    setMessage('');
+    setSuccessMsg('');
+    setSelectedPatient(null);
+    setActionType(null);
+  };
+
+  const handleSend = () => {
+    setSuccessMsg('Sent successfully ✅');
+    setMessage('');
   };
 
   const columns: GridColDef[] = useMemo(
@@ -116,18 +120,14 @@ const PatientsBoard = () => {
         headerName: 'Patient',
         flex: 1,
         minWidth: 260,
-        sortable: false,
         renderCell: (params) => {
           const { personalInfo } = params.row;
 
           return (
             <Stack direction="row" spacing={1.5} alignItems="center">
-              <Avatar
-                src={personalInfo.profileImage}
-                sx={{ width: 32, height: 32 }}
-              />
+              <Avatar src={personalInfo.profileImage} sx={{ width: 32, height: 32 }} />
               <Box>
-                <Typography variant="subtitle2" fontWeight={400}>
+                <Typography variant="subtitle2">
                   {personalInfo.firstName} {personalInfo.lastName}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -150,15 +150,35 @@ const PatientsBoard = () => {
         minWidth: 150,
       },
       {
-        field: 'dob',
-        headerName: 'DOB',
-        minWidth: 140,
-      },
-      {
         field: 'location',
         headerName: 'Location',
-        flex: 1,
+        // flex: 1,
         minWidth: 200,
+      },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        sortable: false,
+        flex: 1,
+        filterable: false,
+        minWidth: 260,
+        renderCell: (params) => (
+          <Stack direction="row" spacing={1}>
+            <Button size="small" variant="soft" onClick={() => handleOpen(params.row, 'whatsapp')}>
+              WhatsApp
+            </Button>
+            <Button size="small" variant="soft" onClick={() => handleOpen(params.row, 'email')}>
+              Email
+            </Button>
+            <Button
+              size="small"
+              variant="soft"
+              onClick={() => handleOpen(params.row, 'prescription')}
+            >
+              Prescription
+            </Button>
+          </Stack>
+        ),
       },
     ],
     [],
@@ -171,105 +191,52 @@ const PatientsBoard = () => {
       </Typography>
 
       {/* Patients Table */}
-      <Box sx={{ height: 520, width: '100%' }}>
+      <Box sx={{ height: 520 }}>
         <DataGrid
           rows={patients}
           columns={columns}
           rowHeight={72}
-          // checkboxSelection
           pageSizeOptions={[8]}
           initialState={{
             pagination: {
               paginationModel: { pageSize: 8 },
             },
           }}
-          onRowClick={(params) => {
-            setSelectedPatient(params.row);
-            setDialogOpen(true);
-          }}
           sx={{
             border: 'none',
             '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: 'background.paper',
               fontWeight: 600,
-            },
-            '& .MuiDataGrid-row': {
-              cursor: 'pointer',
             },
           }}
         />
       </Box>
 
-      {/* Patient Details Dialog (UNCHANGED) */}
-      <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Patient Details</DialogTitle>
+      {/* Action Dialog */}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ textTransform: 'capitalize' }}>Send {actionType}</DialogTitle>
 
         <DialogContent>
           {selectedPatient && (
             <Stack spacing={2} flexDirection={'column'}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <Avatar
-                  src={selectedPatient.personalInfo.profileImage}
-                  sx={{ width: 56, height: 56 }}
-                />
-                <Box>
-                  <Typography variant="h6">
-                    {selectedPatient.personalInfo.firstName}{' '}
-                    {selectedPatient.personalInfo.lastName}
-                  </Typography>
-                  <Typography color="text.secondary">
-                    {selectedPatient.personalInfo.phoneNumber}
-                  </Typography>
-                </Box>
-              </Stack>
-
-              <Divider />
-
-              <Typography>
-                <strong>Email:</strong>{' '}
-                {selectedPatient.personalInfo.personalEmail}
-              </Typography>
-              <Typography>
-                <strong>DOB:</strong> {selectedPatient.dob}
-              </Typography>
-              <Typography>
-                <strong>Location:</strong> {selectedPatient.location}
-              </Typography>
-              <Typography>
-                <strong>Last Visit:</strong> {selectedPatient.lastVisit}
+              <Typography variant="body2" color="text.secondary">
+                To: {selectedPatient.personalInfo.firstName} {selectedPatient.personalInfo.lastName}
               </Typography>
 
-              {!showPrescriptionBox && !successMsg && (
-                <Button
-                  variant="soft"
-                  sx={{ alignSelf: 'flex-start' }}
-                  onClick={() => setShowPrescriptionBox(true)}
-                >
-                  Send Prescription
-                </Button>
-              )}
-
-              {showPrescriptionBox && (
+              {!successMsg ? (
                 <>
                   <TextField
                     multiline
                     minRows={4}
+                    placeholder={`Write ${actionType} content...`}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     fullWidth
-                    placeholder="Write prescription details here..."
-                    value={prescription}
-                    onChange={(e) => setPrescription(e.target.value)}
                   />
-                  <Button
-                    variant="soft"
-                    disabled={!prescription.trim()}
-                    onClick={handleSendPrescription}
-                  >
+                  <Button variant="soft" disabled={!message.trim()} onClick={handleSend}>
                     Send
                   </Button>
                 </>
-              )}
-
-              {successMsg && (
+              ) : (
                 <Typography color="success.main">{successMsg}</Typography>
               )}
             </Stack>
