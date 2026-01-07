@@ -44,7 +44,7 @@ export const ongoingDealsData: Deal[] = [
   {
     id: generateUniqueId(),
     name: 'Replica Badidas Futbol',
-    budget: 465000,
+    budget: 4650,
     closingDate: '2025-09-21',
     phases: [
       { name: 'Booking request', status: 'done' },
@@ -55,7 +55,7 @@ export const ongoingDealsData: Deal[] = [
   {
     id: generateUniqueId(),
     name: 'Pumba Jersey Project',
-    budget: 105000,
+    budget: 1050,
     closingDate: '2025-09-19',
     phases: [
       { name: 'Booking request', status: 'done' },
@@ -66,7 +66,7 @@ export const ongoingDealsData: Deal[] = [
   {
     id: generateUniqueId(),
     name: 'Almost Original Mike Boots',
-    budget: 250000,
+    budget: 2500,
     closingDate: 'closed',
     phases: [
       { name: 'Booking request', status: 'done' },
