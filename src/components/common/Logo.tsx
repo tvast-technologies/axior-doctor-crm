@@ -34,7 +34,7 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
         },
       }}
     >
-      {/* <SvgIcon
+      <SvgIcon
         viewBox={viewBox}
         sx={{
           height: 40,
@@ -135,9 +135,8 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
             <stop offset="1" stopColor={color} />
           </linearGradient>
         </defs>
-      </SvgIcon> */}
-      <img src="/Logo.jpeg" alt="Aixor Doctor CRM" style={{ width: 200, height: 100, marginTop: "1vh" }} />
-      {/* {showName && (
+      </SvgIcon>
+      {showName && (
         <Typography
           sx={[
             {
@@ -162,9 +161,9 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
             },
           ]}
         >
-          Aixor Doctor CRM
+          aurora
         </Typography>
-      )} */}
+      )}
     </Link>
   );
 };
