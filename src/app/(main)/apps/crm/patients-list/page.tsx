@@ -1,23 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Divider,
   Paper,
   Stack,
   TextField,
   Typography,
-  Divider,
 } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { users } from 'data/users';
 
 const patients = [
@@ -111,83 +109,104 @@ const PatientsBoard = () => {
     setShowPrescriptionBox(false);
   };
 
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'name',
+        headerName: 'Patient',
+        flex: 1,
+        minWidth: 260,
+        sortable: false,
+        renderCell: (params) => {
+          const { personalInfo } = params.row;
+
+          return (
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <Avatar
+                src={personalInfo.profileImage}
+                sx={{ width: 32, height: 32 }}
+              />
+              <Box>
+                <Typography variant="subtitle2" fontWeight={400}>
+                  {personalInfo.firstName} {personalInfo.lastName}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {personalInfo.personalEmail}
+                </Typography>
+              </Box>
+            </Stack>
+          );
+        },
+      },
+      {
+        field: 'phone',
+        headerName: 'Phone',
+        minWidth: 160,
+        valueGetter: (_, row) => row.personalInfo.phoneNumber,
+      },
+      {
+        field: 'lastVisit',
+        headerName: 'Last Visit',
+        minWidth: 150,
+      },
+      {
+        field: 'dob',
+        headerName: 'DOB',
+        minWidth: 140,
+      },
+      {
+        field: 'location',
+        headerName: 'Location',
+        flex: 1,
+        minWidth: 200,
+      },
+    ],
+    [],
+  );
+
   return (
     <Paper sx={{ p: { xs: 3, md: 5 } }}>
       <Typography variant="h4" mb={4}>
         Patients
       </Typography>
 
-      {/* Patients Grid */}
-      <Grid container spacing={3}>
-        {patients.map((patient) => {
-          const { personalInfo } = patient;
+      {/* Patients Table */}
+      <Box sx={{ height: 520, width: '100%' }}>
+        <DataGrid
+          rows={patients}
+          columns={columns}
+          rowHeight={72}
+          // checkboxSelection
+          pageSizeOptions={[8]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 8 },
+            },
+          }}
+          onRowClick={(params) => {
+            setSelectedPatient(params.row);
+            setDialogOpen(true);
+          }}
+          sx={{
+            border: 'none',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'background.paper',
+              fontWeight: 600,
+            },
+            '& .MuiDataGrid-row': {
+              cursor: 'pointer',
+            },
+          }}
+        />
+      </Box>
 
-          return (
-            <Grid key={patient.id}>
-              <Card
-                sx={{
-                  borderRadius: 3,
-                  background:
-                    'linear-gradient(180deg, rgba(28,28,28,1), rgba(18,18,18,1))',
-                  cursor: 'pointer',
-                  transition: '0.3s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6,
-                  },
-                }}
-                onClick={() => {
-                  setSelectedPatient(patient);
-                  setDialogOpen(true);
-                }}
-              >
-                <CardContent>
-                  <Stack spacing={2}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Avatar
-                        src={personalInfo.profileImage}
-                        sx={{ width: 48, height: 48 }}
-                      />
-                      <Box>
-                        <Typography fontWeight={600}>
-                          {personalInfo.firstName}{' '}
-                          {personalInfo.lastName}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          📞 {personalInfo.phoneNumber}
-                        </Typography>
-                      </Box>
-                    </Stack>
-
-                    <Typography variant="body2" color="text.secondary">
-                      Last Visit: {patient.lastVisit}
-                    </Typography>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
-
-      {/* Patient Details Dialog */}
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          Patient Details
-        </DialogTitle>
+      {/* Patient Details Dialog (UNCHANGED) */}
+      <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Patient Details</DialogTitle>
 
         <DialogContent>
           {selectedPatient && (
             <Stack spacing={2} flexDirection={'column'}>
-              {/* Header */}
               <Stack direction="row" spacing={2} alignItems="center">
                 <Avatar
                   src={selectedPatient.personalInfo.profileImage}
@@ -206,7 +225,6 @@ const PatientsBoard = () => {
 
               <Divider />
 
-              {/* Details */}
               <Typography>
                 <strong>Email:</strong>{' '}
                 {selectedPatient.personalInfo.personalEmail}
@@ -215,19 +233,16 @@ const PatientsBoard = () => {
                 <strong>DOB:</strong> {selectedPatient.dob}
               </Typography>
               <Typography>
-                <strong>Location:</strong>{' '}
-                {selectedPatient.location}
+                <strong>Location:</strong> {selectedPatient.location}
               </Typography>
               <Typography>
-                <strong>Last Visit:</strong>{' '}
-                {selectedPatient.lastVisit}
+                <strong>Last Visit:</strong> {selectedPatient.lastVisit}
               </Typography>
 
-              {/* Prescription Section */}
               {!showPrescriptionBox && !successMsg && (
                 <Button
                   variant="soft"
-                  sx={{ mt: 1, alignSelf: 'flex-start' }}
+                  sx={{ alignSelf: 'flex-start' }}
                   onClick={() => setShowPrescriptionBox(true)}
                 >
                   Send Prescription
@@ -242,9 +257,7 @@ const PatientsBoard = () => {
                     fullWidth
                     placeholder="Write prescription details here..."
                     value={prescription}
-                    onChange={(e) =>
-                      setPrescription(e.target.value)
-                    }
+                    onChange={(e) => setPrescription(e.target.value)}
                   />
                   <Button
                     variant="soft"
@@ -256,11 +269,8 @@ const PatientsBoard = () => {
                 </>
               )}
 
-              {/* Success Message */}
               {successMsg && (
-                <Typography color="success.main">
-                  {successMsg}
-                </Typography>
+                <Typography color="success.main">{successMsg}</Typography>
               )}
             </Stack>
           )}
