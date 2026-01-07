@@ -196,7 +196,7 @@ export default function BookingPage() {
               />
 
               <TextField
-                label="Event Title"
+                label="Appointment Name"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 fullWidth
@@ -254,7 +254,7 @@ export default function BookingPage() {
               </Box>
 
               <Button size="large" variant="contained" onClick={() => setStep(3)}>
-                Pay $50
+                Pay ₹2500
               </Button>
 
               <Button size="small" variant="text" onClick={() => setStep(1)}>

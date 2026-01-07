@@ -76,7 +76,7 @@ const ScheduleConfig = () => {
       <Stack direction="column" spacing={3} sx={{ mb: 4 }}>
         <StyledTextField
           fullWidth
-          label="Event Title"
+          label="Appointment Name"
           error={!!errors.title}
           helperText={errors?.title?.message}
           {...register('title')}

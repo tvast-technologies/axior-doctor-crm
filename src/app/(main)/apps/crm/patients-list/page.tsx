@@ -92,6 +92,7 @@ const PatientsBoard = () => {
   const [actionType, setActionType] = useState<ActionType | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [message, setMessage] = useState('');
+  const [attachment, setAttachment] = useState<File | null>(null);
   const [successMsg, setSuccessMsg] = useState('');
 
   const handleOpen = (patient: any, action: ActionType) => {
@@ -103,6 +104,7 @@ const PatientsBoard = () => {
   const handleClose = () => {
     setOpen(false);
     setMessage('');
+    setAttachment(null);
     setSuccessMsg('');
     setSelectedPatient(null);
     setActionType(null);
@@ -111,6 +113,7 @@ const PatientsBoard = () => {
   const handleSend = () => {
     setSuccessMsg('Sent successfully ✅');
     setMessage('');
+    setAttachment(null);
   };
 
   const columns: GridColDef[] = useMemo(
@@ -122,7 +125,6 @@ const PatientsBoard = () => {
         minWidth: 260,
         renderCell: (params) => {
           const { personalInfo } = params.row;
-
           return (
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Avatar src={personalInfo.profileImage} sx={{ width: 32, height: 32 }} />
@@ -152,7 +154,6 @@ const PatientsBoard = () => {
       {
         field: 'location',
         headerName: 'Location',
-        // flex: 1,
         minWidth: 200,
       },
       {
@@ -190,7 +191,6 @@ const PatientsBoard = () => {
         Patients
       </Typography>
 
-      {/* Patients Table */}
       <Box sx={{ height: 520 }}>
         <DataGrid
           rows={patients}
@@ -213,7 +213,9 @@ const PatientsBoard = () => {
 
       {/* Action Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ textTransform: 'capitalize' }}>Send {actionType}</DialogTitle>
+        <DialogTitle sx={{ textTransform: 'capitalize' }}>
+          {actionType === 'prescription' ? 'Send Prescription (PDF only)' : `Send ${actionType}`}
+        </DialogTitle>
 
         <DialogContent>
           {selectedPatient && (
@@ -222,23 +224,73 @@ const PatientsBoard = () => {
                 To: {selectedPatient.personalInfo.firstName} {selectedPatient.personalInfo.lastName}
               </Typography>
 
-              {!successMsg ? (
+              {!successMsg && (
                 <>
-                  <TextField
-                    multiline
-                    minRows={4}
-                    placeholder={`Write ${actionType} content...`}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    fullWidth
-                  />
-                  <Button variant="soft" disabled={!message.trim()} onClick={handleSend}>
+                  {/* Prescription: PDF only, no text */}
+                  {actionType === 'prescription' ? (
+                    <>
+                      <Button variant="outlined" component="label" sx={{ mt: 1 }}>
+                        {attachment ? 'Change PDF' : 'Add PDF'}
+                        <input
+                          type="file"
+                          accept="application/pdf"
+                          hidden
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setAttachment(e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </Button>
+                      {attachment && (
+                        <Typography variant="caption">Selected: {attachment.name}</Typography>
+                      )}
+                    </>
+                  ) : (
+                    // WhatsApp / Email: text + optional attachment
+                    <>
+                      <TextField
+                        multiline
+                        minRows={4}
+                        placeholder={`Write ${actionType} content...`}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        fullWidth
+                      />
+                      <Button variant="outlined" component="label" sx={{ mt: 1 }}>
+                        {attachment ? 'Change Attachment' : 'Add Attachment'}
+                        <input
+                          type="file"
+                          hidden
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setAttachment(e.target.files[0]);
+                            }
+                          }}
+                        />
+                      </Button>
+                      {attachment && (
+                        <Typography variant="caption">Selected: {attachment.name}</Typography>
+                      )}
+                    </>
+                  )}
+
+                  <Button
+                    variant="soft"
+                    disabled={
+                      actionType === 'prescription'
+                        ? !attachment
+                        : !message.trim() && !attachment
+                    }
+                    sx={{ mt: 1 }}
+                    onClick={handleSend}
+                  >
                     Send
                   </Button>
                 </>
-              ) : (
-                <Typography color="success.main">{successMsg}</Typography>
               )}
+
+              {successMsg && <Typography color="success.main">{successMsg}</Typography>}
             </Stack>
           )}
         </DialogContent>

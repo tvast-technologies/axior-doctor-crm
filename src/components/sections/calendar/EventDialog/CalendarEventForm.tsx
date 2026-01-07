@@ -69,7 +69,7 @@ const CalendarEventForm = () => {
       <Stack direction="column" spacing={2}>
         <StyledTextField
           fullWidth
-          label="Event Title"
+          label="Appointment Name"
           error={!!errors.title}
           helperText={errors.title?.message}
           {...register('title')}
