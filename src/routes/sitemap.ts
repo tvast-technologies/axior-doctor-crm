@@ -21,7 +21,7 @@ export interface MenuItem {
   key?: string; // used for the locale
   subheader: string;
   icon: string;
-  access: "doctor" | "patient" | "both";
+  access: 'doctor' | 'patient' | 'both';
   iconSx?: SxProps;
   items: SubMenuItem[];
 }
@@ -30,14 +30,14 @@ const sitemap: MenuItem[] = [
   {
     id: 'homepage',
     subheader: 'Homepage',
-    access: "doctor",
+    access: 'doctor',
     key: 'homepage',
     icon: 'material-symbols:data-exploration-outline-rounded',
     items: [
       {
         name: 'Dashboard',
         key: 'Dashboard',
-        path: "/",
+        path: '/',
         pathName: 'crm',
         icon: 'material-symbols:phone-in-talk-outline-rounded',
         active: true,
@@ -48,7 +48,7 @@ const sitemap: MenuItem[] = [
     id: 'apps',
     subheader: 'Apps',
     key: 'apps',
-    access: "patient",
+    access: 'patient',
     icon: 'material-symbols:widgets-outline-rounded',
     items: [
       {
@@ -71,7 +71,7 @@ const sitemap: MenuItem[] = [
             path: paths.leadDetails,
             pathName: 'lead-details',
             active: true,
-          }
+          },
         ],
       },
       {
@@ -97,7 +97,7 @@ const sitemap: MenuItem[] = [
     id: 'apps',
     subheader: 'Apps',
     key: 'apps',
-    access: "doctor",
+    access: 'doctor',
     icon: 'material-symbols:widgets-outline-rounded',
     items: [
       {
@@ -152,6 +152,36 @@ const sitemap: MenuItem[] = [
             icon: 'material-symbols:calendar-month-outline',
             active: true,
           },
+        ],
+      },
+      {
+        name: 'Invoice',
+        key: 'invoice',
+        pathName: 'invoice',
+        icon: 'material-symbols:receipt-long',
+        active: true,
+        items: [
+          {
+            name: 'Invoice List',
+            key: 'invoice_list',
+            path: paths.invoiceList,
+            pathName: 'invoice-list',
+            active: true,
+          },
+          {
+            name: 'Create Invoice',
+            key: 'create_invoice',
+            path: paths.createInvoice,
+            pathName: 'create-invoice',
+            active: true,
+          },
+          // {
+          //   name: 'Invoice Preview',
+          //   key: 'invoice_preview',
+          //   path: paths.invoicePreview,
+          //   pathName: 'invoice-preview',
+          //   active: true,
+          // },
         ],
       },
     ],
