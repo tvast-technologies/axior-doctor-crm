@@ -33,7 +33,7 @@ export const contactInfoData: { attribute: string; value: ReactNode }[] = [
   },
   {
     attribute: 'Phone No.',
-    value: <CopyableText text="+91 XXX-XXX-XX55" link href="tel:+91 80703 18355" />,
+    value: <CopyableText text="+91 6360318731" link href="tel:+91 63603 18731" />,
   },
   { attribute: 'Last Visit on', value: <Typography variant="body2">05-01-2026</Typography> },
   { attribute: 'Last Invoice amount', value: <Typography variant="body2">₹ 4,500</Typography> },
@@ -42,39 +42,39 @@ export const contactInfoData: { attribute: string; value: ReactNode }[] = [
   //   value: <Chip label="Gerard P." avatar={<Avatar src={users[7].avatar} />} variant="soft" />,
   // },
 ];
-
 export const ongoingDealsData: Deal[] = [
   {
     id: generateUniqueId(),
-    name: 'Replica Badidas Futbol',
+    name: 'General Checkup',
     budget: 4650,
     closingDate: '2025-09-21',
     phases: [
-      { name: 'Booking request', status: 'done' },
+      { name: 'Appointment Requested', status: 'done' },
       { name: 'Confirmed', status: 'ongoing' },
       { name: 'Completed', status: 'closed' },
     ],
   },
   {
     id: generateUniqueId(),
-    name: 'Pumba Jersey Project',
+    name: 'Blood Test',
     budget: 1050,
     closingDate: '2025-09-19',
     phases: [
-      { name: 'Booking request', status: 'done' },
+      { name: 'Appointment Requested', status: 'done' },
       { name: 'Confirmed', status: 'done' },
       { name: 'Completed', status: 'ongoing' },
     ],
   },
   {
     id: generateUniqueId(),
-    name: 'Almost Original Mike Boots',
+    name: 'Dental Cleaning',
     budget: 2500,
     closingDate: 'closed',
     phases: [
-      { name: 'Booking request', status: 'done' },
+      { name: 'Appointment Requested', status: 'done' },
       { name: 'Confirmed', status: 'done' },
       { name: 'Completed', status: 'done' },
     ],
   },
 ];
+

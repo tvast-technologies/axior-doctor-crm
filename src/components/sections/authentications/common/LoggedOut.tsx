@@ -28,9 +28,10 @@ const LoggedOut = () => {
           Log back in
         </Button>
       </Box>
-      <Link href="#!" variant="subtitle2">
+      <Stack/>
+      {/* <Link href="#!" variant="subtitle2">
         Trouble signing in?
-      </Link>
+      </Link> */}
     </Stack>
   );
 };

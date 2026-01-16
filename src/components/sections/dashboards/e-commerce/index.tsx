@@ -20,6 +20,7 @@ const ECommerce = () => {
   const router = useRouter();
 
   useEffect(() => {
+    localStorage.removeItem('create-invoice-form');
     if (!data.data?.user) {
       router.push('/authentication/default/jwt/login');
     }

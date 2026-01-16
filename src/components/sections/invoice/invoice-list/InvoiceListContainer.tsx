@@ -5,17 +5,11 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Button, InputAdornment, Stack, Tab } from '@mui/material';
 import { GridFilterModel, useGridApiRef } from '@mui/x-data-grid';
 import { invoiceListTableRowData } from 'data/invoice';
+import { users } from 'data/users';
 import { useBreakpoints } from 'providers/BreakpointsProvider';
 import IconifyIcon from 'components/base/IconifyIcon';
 import StyledTextField from 'components/styled/StyledTextField';
 import InvoiceListTable from './InvoiceListTable';
-import { users } from 'data/users';
-
-/* -------------------------------------------------------------------------- */
-/*                         LOCAL STORAGE → TABLE ROW                           */
-/* -------------------------------------------------------------------------- */
-
-const STORAGE_KEY = 'create-invoice-form';
 
 const getInvoiceRowFromLocalStorage = () => {
   if (typeof window === 'undefined') return null;
@@ -25,6 +19,7 @@ const getInvoiceRowFromLocalStorage = () => {
 
   const data = JSON.parse(raw);
 
+  console.log(data);
   return {
     id: data.invoiceDetails?.invoiceNumber ?? Date.now(),
     invoiceNumber: data.invoiceDetails?.invoiceNumber,
@@ -35,21 +30,18 @@ const getInvoiceRowFromLocalStorage = () => {
       email: data.invoiceTo?.email || '',
     },
 
-    amount: data.itemDetails?.reduce(
-      (sum: number, item: any) => sum,
+    requiredAmount: data.itemDetails?.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0,
     ),
 
-    status: data.invoiceDetails?.status || 'pending',
+    paidAmount: 0,
 
-    // 🔴 MUST MATCH COLUMN FIELD
+    status: data.invoiceDetails?.status || 'paid',
+
     issueDate: data.deadline?.issueDate || null,
   };
 };
-
-
-/* -------------------------------------------------------------------------- */
-/*                                 COMPONENT                                  */
-/* -------------------------------------------------------------------------- */
 
 type TabValue = 'all' | 'paid' | 'late' | 'sent' | 'draft';
 
@@ -64,15 +56,11 @@ const InvoiceListContainer = () => {
     items: [],
   });
 
-  /* ----------------------- APPEND LOCAL STORAGE DATA ----------------------- */
-
   const storedInvoiceRow = getInvoiceRowFromLocalStorage();
 
   const tableData = storedInvoiceRow
     ? [...invoiceListTableRowData, storedInvoiceRow]
     : invoiceListTableRowData;
-
-  /* ----------------------------- HANDLERS ---------------------------------- */
 
   const handleChange = (e: SyntheticEvent, newValue: TabValue) => {
     setValue(newValue);

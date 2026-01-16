@@ -99,7 +99,7 @@ export const recipientLists: RecipientItem[] = [
     avatar: users[0].avatar,
     email: 'patient@gmail.com',
     status: 'Active',
-    phone: 'XXX-XXX-XX55',
+    phone: '6360318731',
     location: 'India',
   },
   {
@@ -108,7 +108,7 @@ export const recipientLists: RecipientItem[] = [
     avatar: users[1].avatar,
     email: 'priya.verma@gmail.com',
     status: 'Pending',
-    phone: 'XXX-XXX-XX89',
+    phone: '8523465972',
     location: 'India',
   },
   {
@@ -117,7 +117,7 @@ export const recipientLists: RecipientItem[] = [
     avatar: users[2].avatar,
     email: 'rahul.mehta@gmail.com',
     status: 'Inactive',
-    phone: 'XXX-XXX-XX10',
+    phone: '9163263691',
     location: 'India',
   },
   {
@@ -126,7 +126,7 @@ export const recipientLists: RecipientItem[] = [
     avatar: users[3].avatar,
     email: 'sneha.iyer@gmail.com',
     status: 'Active',
-    phone: 'XXX-XXX-XX90',
+    phone: '7894561235',
     location: 'India',
   },
   {
@@ -135,7 +135,7 @@ export const recipientLists: RecipientItem[] = [
     avatar: users[4].avatar,
     email: 'rohit.singh@gmail.com',
     status: 'Active',
-    phone: 'XXX-XXX-XX98',
+    phone: '9145789236',
     location: 'India',
   },
 ];
@@ -151,10 +151,10 @@ export const invoiceData: InvoicePreviewItem = {
   },
   invoiceTo: {
     name: 'Amit Sharma',
-    phone: 'XXX-XXX-XX55',
+    phone: '6360318731',
     email: 'patient@gmail.com',
     address: 'India',
-    issueDate: '2026-01-16',
+    issueDate: '2026-01-30',
   },
   invoiceDetails: {
     invoiceNumber: 45001,
