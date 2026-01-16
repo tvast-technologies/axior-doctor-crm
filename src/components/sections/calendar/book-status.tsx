@@ -1,7 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Button, Dialog, Stack, TextField, Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import { Box, Button, Chip, Dialog, Stack, TextField, Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs, { Dayjs } from 'dayjs';
@@ -37,12 +41,11 @@ const generateTimeSlots = (start = '09:00', end = '17:00', interval = 30) => {
   return slots;
 };
 
-export default function BookingPage() {
+const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  /* form state */
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
@@ -51,7 +54,6 @@ export default function BookingPage() {
   const dateKey = selectedDate.format('YYYY-MM-DD');
   const slots = generateTimeSlots();
 
-  /* ---------- LOAD + DEFAULT DEMO DATA ---------- */
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
 
@@ -83,7 +85,6 @@ export default function BookingPage() {
     }
   }, []);
 
-  /* ---------- PERSIST ---------- */
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
   }, [bookings]);
@@ -126,9 +127,9 @@ export default function BookingPage() {
         Booking Calendar
       </Typography>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {/* Calendar */}
-        <Grid>
+        <Grid container spacing={2} size={3}>
           <Typography variant="h6" mb={1}>
             Calendar
           </Typography>
@@ -138,32 +139,75 @@ export default function BookingPage() {
             onChange={(d) => {
               if (!d) return;
               setSelectedDate(d);
-              setDialogOpen(true);
+              // setDialogOpen(true);
             }}
           />
         </Grid>
 
-        {/* Events for Day */}
-        <Grid>
-          <Typography variant="h6" mb={2}>
-            Events on {dateKey}
-          </Typography>
+        <Grid container size={8}>
+          <Stack flexDirection={'column'}>
+            <Typography variant="h6" mb={1}>
+              Book an Appointment
+            </Typography>
 
-          {eventsForDay.length === 0 ? (
-            <Typography color="text.secondary">No events booked</Typography>
-          ) : (
-            <Stack spacing={1}>
-              {eventsForDay.map((e) => (
-                <Box key={e.id} p={2} border="1px solid" borderColor="divider" borderRadius={2}>
-                  <Typography fontWeight={600}>{e.title}</Typography>
-                  <Typography variant="body2">
-                    {e.start} – {e.end}
-                  </Typography>
-                  <Typography variant="body2">{e.name}</Typography>
-                </Box>
-              ))}
-            </Stack>
-          )}
+            <Typography variant="body2" color="text.secondary" mb={3}>
+              {dateKey}
+            </Typography>
+          </Stack>
+
+          <Stack spacing={3} flexDirection={'column'}>
+            <TextField
+              label="Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              fullWidth
+            />
+
+            <TextField
+              label="Appointment Name"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              fullWidth
+            />
+
+            <Box>
+              <Typography fontWeight={500} mb={1}>
+                Select Time Slot
+              </Typography>
+
+              <Grid container spacing={1}>
+                {slots.map((s) => {
+                  const booked = isSlotBooked(s.start);
+                  const selected = slot?.start === s.start;
+
+                  return (
+                    <Grid key={s.start}>
+                      <Button
+                        fullWidth
+                        size="small"
+                        disabled={booked}
+                        variant={selected ? 'contained' : 'outlined'}
+                        onClick={() => setSlot(s)}
+                      >
+                        {s.start}
+                      </Button>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Box>
+
+            <Button
+              size="large"
+              variant="contained"
+              disabled={!name || !title || !slot}
+              onClick={() => {
+                (setStep(2), setDialogOpen(true));
+              }}
+            >
+              Continue
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
 
@@ -175,100 +219,128 @@ export default function BookingPage() {
           resetForm();
         }}
         fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            overflow: 'hidden',
+          },
+        }}
       >
-        <Box p={3}>
-          <Typography variant="h6" mb={1}>
-            Book Event
-          </Typography>
+        {/* ---------- HEADER ---------- */}
+        <Box
+          sx={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            color: '#fff',
+            p: 3,
+          }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" spacing={1} alignItems="center">
+              <EventAvailableIcon />
+              <Typography variant="h6" fontWeight={700}>
+                Confirm Booking
+              </Typography>
+            </Stack>
 
-          <Typography variant="body2" color="text.secondary" mb={3}>
-            {dateKey}
-          </Typography>
+            {step === 2 && <Chip label="Review" color="warning" sx={{ fontWeight: 600 }} />}
 
-          {/* STEP 1 */}
-          {step === 1 && (
-            <Stack spacing={3} flexDirection={'column'}>
-              <TextField
-                label="Your Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                fullWidth
+            {step === 3 && (
+              <Chip
+                icon={<CheckCircleIcon />}
+                label="Paid"
+                color="success"
+                sx={{ fontWeight: 600 }}
               />
+            )}
+          </Stack>
+        </Box>
 
-              <TextField
-                label="Appointment Name"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                fullWidth
-              />
+        {/* ---------- BODY ---------- */}
+        <Box p={4}>
+          {step === 2 && (
+            <Stack spacing={4} flexDirection={'column'}>
+              {/* Summary Card */}
+              <Box
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 3,
+                  p: 3,
+                  bgcolor: 'grey.50',
+                }}
+              >
+                <Stack spacing={1.5} flexDirection={'column'}>
+                  <Typography fontWeight={700} fontSize={18}>
+                    {title}
+                  </Typography>
 
-              <Box>
-                <Typography fontWeight={500} mb={1}>
-                  Select Time Slot
-                </Typography>
+                  <Typography color="text.secondary">
+                    {dayjs(dateKey).format('dddd, MMM D')}
+                  </Typography>
 
-                <Grid container spacing={1}>
-                  {slots.map((s) => {
-                    const booked = isSlotBooked(s.start);
-                    const selected = slot?.start === s.start;
+                  <Typography fontWeight={500}>
+                    {slot?.start} – {slot?.end}
+                  </Typography>
 
-                    return (
-                      <Grid key={s.start}>
-                        <Button
-                          fullWidth
-                          size="small"
-                          disabled={booked}
-                          variant={selected ? 'contained' : 'outlined'}
-                          onClick={() => setSlot(s)}
-                        >
-                          {s.start}
-                        </Button>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
+                  <Divider />
+
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography fontWeight={600}>Total</Typography>
+                    <Typography fontWeight={700} fontSize={18}>
+                      ₹2500
+                    </Typography>
+                  </Stack>
+                </Stack>
               </Box>
 
               <Button
                 size="large"
                 variant="contained"
-                disabled={!name || !title || !slot}
-                onClick={() => setStep(2)}
+                startIcon={<PaymentsIcon />}
+                sx={{
+                  borderRadius: 3,
+                  py: 1.5,
+                  fontWeight: 600,
+                }}
+                onClick={() => setStep(3)}
               >
-                Continue
-              </Button>
-            </Stack>
-          )}
-
-          {/* STEP 2 */}
-          {step === 2 && (
-            <Stack spacing={3} flexDirection={'column'}>
-              <Box>
-                <Typography fontWeight={600}>{title}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {dateKey}
-                </Typography>
-                <Typography variant="body2">
-                  {slot?.start} – {slot?.end}
-                </Typography>
-              </Box>
-
-              <Button size="large" variant="contained" onClick={() => setStep(3)}>
                 Pay ₹2500
               </Button>
 
-              <Button size="small" variant="text" onClick={() => setStep(1)}>
+              <Button
+                variant="text"
+                onClick={() => setDialogOpen(false)}
+                sx={{ alignSelf: 'center' }}
+              >
                 Back
               </Button>
             </Stack>
           )}
 
-          {/* STEP 3 */}
           {step === 3 && (
-            <Stack spacing={3} alignItems="center" flexDirection={'column'}>
-              <Typography fontWeight={600}>Payment Successful 🎉</Typography>
+            <Stack spacing={4} alignItems="center" flexDirection={'column'}>
+              <CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
 
-              <Button size="large" variant="contained" fullWidth onClick={confirmBooking}>
+              <Typography variant="h6" fontWeight={700}>
+                Payment Successful
+              </Typography>
+
+              <Typography color="text.secondary" textAlign="center">
+                Your appointment has been reserved and confirmed.
+              </Typography>
+
+              <Button
+                size="large"
+                variant="contained"
+                fullWidth
+                sx={{
+                  borderRadius: 3,
+                  py: 1.5,
+                  fontWeight: 600,
+                }}
+                onClick={confirmBooking}
+              >
                 Confirm Booking
               </Button>
             </Stack>
@@ -277,4 +349,6 @@ export default function BookingPage() {
       </Dialog>
     </Box>
   );
-}
+};
+
+export default BookingPage;

@@ -1,7 +1,7 @@
-import Calendar from 'components/sections/calendar';
+import CalendarMain from 'components/sections/calendar/CalendarMain';
 
 const Page = () => {
-  return <Calendar />;
+  return <CalendarMain />;
 };
 
 export default Page;
