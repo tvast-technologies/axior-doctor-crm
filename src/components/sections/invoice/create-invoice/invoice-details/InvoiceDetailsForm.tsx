@@ -31,7 +31,6 @@ const InvoiceDetailsForm = () => {
               <StyledTextField
                 type="number"
                 placeholder="Invoice number"
-                value={45001}
                 variant="filled"
                 size="large"
                 {...register('invoiceDetails.invoiceNumber')}

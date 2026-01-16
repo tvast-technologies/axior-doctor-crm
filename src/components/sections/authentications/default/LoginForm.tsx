@@ -130,7 +130,7 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
             }}
           >
             <Typography variant="h4">Welcome Back!</Typography>
-            <Typography
+            {/* <Typography
               variant="subtitle2"
               sx={{
                 color: 'text.secondary',
@@ -140,7 +140,7 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
               <Link href={signUpLink} sx={{ ml: 1 }}>
                 Doctor Login
               </Link>
-            </Typography>
+            </Typography> */}
           </Stack>
         </Grid>
         {/* {socialAuth && (
@@ -213,9 +213,10 @@ const LoginForm = ({ handleLogin, signUpLink, forgotPasswordLink, defaultCredent
           </Box>
         </Grid>
       </Grid>
-      <Link href="#!" variant="subtitle2">
+      <Stack/>
+      {/* <Link href="#!" variant="subtitle2">
         Trouble signing in?
-      </Link>
+      </Link> */}
     </Stack>
   );
 };

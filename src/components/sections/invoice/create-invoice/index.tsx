@@ -16,7 +16,7 @@ const CreateInvoice = () => {
   const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    localStorage.setItem('create-invoice-form', JSON.stringify(data));
     router.push(paths.invoicePreview);
     reset();
   };

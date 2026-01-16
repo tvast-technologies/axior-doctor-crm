@@ -4,11 +4,93 @@ import { useEffect, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PaymentsIcon from '@mui/icons-material/Payments';
-import { Box, Button, Chip, Dialog, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  Stack,
+  TextField,
+  Typography,
+  Grid,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from '@mui/material';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { DateCalendar, PickersDay } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { motion, AnimatePresence } from 'framer-motion';
+import NumberTextField from 'components/base/NumberTextField';
+import { users } from 'data/users';
+
+// Patients data
+const patients = [
+  {
+    id: 'pat001',
+    personalInfo: {
+      firstName: 'Amit',
+      lastName: 'Sharma',
+      personalEmail: 'patient@gmail.com',
+      phoneNumber: '6360318731',
+      profileImage: users[0].avatar,
+    },
+    age: '22',
+  },
+  {
+    id: 'pat002',
+    personalInfo: {
+      firstName: 'Priya',
+      lastName: 'Verma',
+      personalEmail: 'priya.verma@gmail.com',
+      phoneNumber: '8523465972',
+      profileImage: users[1].avatar,
+    },
+    age: '24',
+  },
+  {
+    id: 'pat003',
+    personalInfo: {
+      firstName: 'Rahul',
+      lastName: 'Mehta',
+      personalEmail: 'rahul.mehta@gmail.com',
+      phoneNumber: '9163263691',
+      profileImage: users[2].avatar,
+    },
+    age: '20',
+  },
+  {
+    id: 'pat004',
+    personalInfo: {
+      firstName: 'Sneha',
+      lastName: 'Iyer',
+      personalEmail: 'sneha.iyer@gmail.com',
+      phoneNumber: '7894561235',
+      profileImage: users[3].avatar,
+    },
+    age: '40',
+  },
+  {
+    id: 'pat005',
+    personalInfo: {
+      firstName: 'Rohit',
+      lastName: 'Singh',
+      personalEmail: 'rohit.singh@gmail.com',
+      phoneNumber: '9145789236',
+      profileImage: users[4].avatar,
+    },
+    age: '35',
+  },
+];
 
 type Booking = {
   id: string;
@@ -16,70 +98,93 @@ type Booking = {
   start: string;
   end: string;
   name: string;
+  email?: string;
+  phone: string;
+  age?: number;
   title: string;
   paid: boolean;
+  mode?: 'Online' | 'Offline';
+  location?: string;
+  sessionType?: 'New' | 'Follow';
 };
 
 const STORAGE_KEY = 'bookings';
 
-/* ---------- TIME SLOTS ---------- */
 const generateTimeSlots = (start = '09:00', end = '17:00', interval = 30) => {
   const slots: { start: string; end: string }[] = [];
-
   let current = new Date(`1970-01-01T${start}:00`);
   const endTime = new Date(`1970-01-01T${end}:00`);
 
   while (current < endTime) {
     const next = new Date(current.getTime() + interval * 60000);
-    slots.push({
-      start: current.toTimeString().slice(0, 5),
-      end: next.toTimeString().slice(0, 5),
-    });
+    slots.push({ start: current.toTimeString().slice(0, 5), end: next.toTimeString().slice(0, 5) });
     current = next;
   }
 
   return slots;
 };
 
+const getRandomBlockedSlots = (slots: { start: string; end: string }[]) => {
+  const blocked: string[] = [];
+  slots.forEach((s) => {
+    if (Math.random() < 0.15) blocked.push(s.start);
+  });
+  return blocked;
+};
+
 const CalendarMain = () => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [step, setStep] = useState(1);
+
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState<number | ''>('');
   const [title, setTitle] = useState('');
   const [slot, setSlot] = useState<{ start: string; end: string } | null>(null);
 
-  const dateKey = selectedDate.format('YYYY-MM-DD');
-  const slots = generateTimeSlots();
+  const [mode, setMode] = useState<'Online' | 'Offline'>('Online');
+  const [location, setLocation] = useState('');
+  const [sessionType, setSessionType] = useState<'New' | 'Follow'>('New');
+  const [agree, setAgree] = useState(false);
 
+  const slots = generateTimeSlots();
+  const [blockedSlots, setBlockedSlots] = useState<string[]>([]);
+
+  const dateKey = selectedDate?.format('YYYY-MM-DD') ?? '';
+
+  /* ---------- DISABLE DATES ---------- */
+  const isDateDisabled = (date: Dayjs) => {
+    const today = dayjs().startOf('day');
+    if (date.isBefore(today)) return true;
+    if (date.day() === 0 || date.day() === 6) return true;
+
+    const wednesdays: string[] = [];
+    let d = today;
+    let count = 0;
+    while (count < 4) {
+      if (d.day() === 3) {
+        wednesdays.push(d.format('YYYY-MM-DD'));
+        count++;
+      }
+      d = d.add(1, 'day');
+    }
+    if (wednesdays.includes(date.format('YYYY-MM-DD'))) return true;
+
+    return false;
+  };
+
+  /* ---------- LOAD BOOKINGS ---------- */
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-
     if (stored) {
       setBookings(JSON.parse(stored));
     } else {
-      const demo: Booking[] = [
-        {
-          id: '1',
-          date: dayjs().format('YYYY-MM-DD'),
-          start: '10:00',
-          end: '10:30',
-          name: 'John Doe',
-          title: 'Demo Meeting',
-          paid: true,
-        },
-        {
-          id: '2',
-          date: dayjs().format('YYYY-MM-DD'),
-          start: '14:00',
-          end: '14:30',
-          name: 'Jane Smith',
-          title: 'Consultation',
-          paid: true,
-        },
-      ];
+      const demo: Booking[] = [];
       setBookings(demo);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
     }
@@ -90,13 +195,22 @@ const CalendarMain = () => {
   }, [bookings]);
 
   const isSlotBooked = (start: string) =>
-    bookings.some((b) => b.date === dateKey && b.start === start);
+    bookings.some((b) => b.date === dateKey && b.start === start) || blockedSlots.includes(start);
 
+  /* ---------- RESET FORM ---------- */
   const resetForm = () => {
     setStep(1);
+    setSelectedPatientId('');
     setName('');
+    setEmail('');
+    setPhone('');
+    setAge('');
     setTitle('');
     setSlot(null);
+    setMode('Online');
+    setLocation('');
+    setSessionType('New');
+    setAgree(false);
   };
 
   const confirmBooking = () => {
@@ -110,8 +224,14 @@ const CalendarMain = () => {
         start: slot.start,
         end: slot.end,
         name,
+        email,
+        phone,
+        age: age === '' ? undefined : age,
         title,
         paid: true,
+        mode,
+        location,
+        sessionType,
       },
     ]);
 
@@ -119,7 +239,29 @@ const CalendarMain = () => {
     resetForm();
   };
 
-  const eventsForDay = bookings.filter((b) => b.date === dateKey);
+  useEffect(() => {
+    if (!selectedPatientId) {
+      setName('');
+      setPhone('');
+      setEmail('');
+      setAge('');
+      return;
+    }
+
+    const patient = patients.find((p) => p.id === selectedPatientId);
+    if (patient) {
+      setName(`${patient.personalInfo.firstName} ${patient.personalInfo.lastName}`);
+      setPhone(patient.personalInfo.phoneNumber);
+      setEmail(patient.personalInfo.personalEmail);
+      setAge(Number(patient.age));
+    }
+  }, [selectedPatientId]);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+    setSlot(null);
+    setBlockedSlots(getRandomBlockedSlots(slots));
+  }, [selectedDate]);
 
   return (
     <Box p={4}>
@@ -127,91 +269,170 @@ const CalendarMain = () => {
         Booking Calendar
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         {/* Calendar */}
-        <Grid container spacing={2} size={3}>
+        <Grid>
           <Typography variant="h6" mb={1}>
             Calendar
           </Typography>
 
           <DateCalendar
             value={selectedDate}
-            onChange={(d) => {
-              if (!d) return;
-              setSelectedDate(d);
-              // setDialogOpen(true);
-            }}
+            onChange={(d) => setSelectedDate(d)}
+            shouldDisableDate={isDateDisabled}
+            slots={{ day: PickersDay }}
           />
+
+          {/* Patient Dropdown */}
+          {selectedDate && (
+            <Box mt={3}>
+              <FormControl fullWidth>
+                <InputLabel>Select Patient</InputLabel>
+                <Select
+                  value={selectedPatientId}
+                  onChange={(e) => setSelectedPatientId(e.target.value)}
+                  renderValue={(selected) => {
+                    if (!selected) return 'New Patient';
+                    const patient = patients.find((p) => p.id === selected);
+                    return patient ? (
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Avatar src={patient.personalInfo.profileImage} sx={{ width: 24, height: 24 }} />
+                        <Typography>
+                          {patient.personalInfo.firstName} {patient.personalInfo.lastName}
+                        </Typography>
+                      </Stack>
+                    ) : (
+                      'New Patient'
+                    );
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>New Patient</em>
+                  </MenuItem>
+                  {patients.map((p) => (
+                    <MenuItem key={p.id} value={p.id}>
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <Avatar src={p.personalInfo.profileImage} sx={{ width: 24, height: 24 }} />
+                        <Typography>
+                          {p.personalInfo.firstName} {p.personalInfo.lastName}
+                        </Typography>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
         </Grid>
 
-        <Grid container size={8}>
-          <Stack flexDirection={'column'}>
-            <Typography variant="h6" mb={1}>
-              Book an Appointment
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary" mb={3}>
-              {dateKey}
-            </Typography>
-          </Stack>
-
-          <Stack spacing={3} flexDirection={'column'}>
-            <TextField
-              label="Your Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Appointment Name"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              fullWidth
-            />
-
-            <Box>
-              <Typography fontWeight={500} mb={1}>
-                Select Time Slot
+        {/* Booking Form */}
+        {selectedDate && (
+          <Grid>
+            <Stack flexDirection={'column'} spacing={2}>
+              <Typography variant="h6">Book an Appointment</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {dateKey}
               </Typography>
 
-              <Grid container spacing={1}>
-                {slots.map((s) => {
-                  const booked = isSlotBooked(s.start);
-                  const selected = slot?.start === s.start;
+              <TextField label="Your Name" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+              <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
+              <NumberTextField label="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} fullWidth />
+              <NumberTextField label="Age" value={age} onChange={(e) => setAge(Number(e.target.value))} fullWidth />
+              <TextField label="Appointment Name" value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
 
-                  return (
-                    <Grid key={s.start}>
-                      <Button
-                        fullWidth
-                        size="small"
-                        disabled={booked}
-                        variant={selected ? 'contained' : 'outlined'}
-                        onClick={() => setSlot(s)}
-                      >
-                        {s.start}
-                      </Button>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </Box>
+              {/* Mode of Visit */}
+              <FormControl component="fieldset">
+                <Typography fontWeight={500} mb={1}>
+                  Mode of Visit
+                </Typography>
+                <RadioGroup row value={mode} onChange={(e) => setMode(e.target.value as 'Online' | 'Offline')}>
+                  <FormControlLabel value="Online" control={<Radio />} label="Online" />
+                  <FormControlLabel value="Offline" control={<Radio />} label="Offline" />
+                </RadioGroup>
+              </FormControl>
 
-            <Button
-              size="large"
-              variant="contained"
-              disabled={!name || !title || !slot}
-              onClick={() => {
-                (setStep(2), setDialogOpen(true));
-              }}
-            >
-              Continue
-            </Button>
-          </Stack>
-        </Grid>
+              {mode === 'Offline' && (
+                <FormControl fullWidth>
+                  <InputLabel>Location</InputLabel>
+                  <Select value={location} onChange={(e) => setLocation(e.target.value)}>
+                    <MenuItem value="HSR">HSR</MenuItem>
+                    <MenuItem value="Kormangala">Kormangala</MenuItem>
+                    <MenuItem value="Banashankari">Banashankari</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+
+              {/* Session Type */}
+              <FormControl component="fieldset">
+                <Typography fontWeight={500} mb={1}>
+                  Session Type
+                </Typography>
+                <RadioGroup row value={sessionType} onChange={(e) => setSessionType(e.target.value as 'New' | 'Follow')}>
+                  <FormControlLabel value="New" control={<Radio />} label="New" />
+                  <FormControlLabel value="Follow" control={<Radio />} label="Follow" />
+                </RadioGroup>
+              </FormControl>
+
+              {/* Terms */}
+              <FormControlLabel
+                control={<Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
+                label="I agree to the terms and conditions"
+              />
+
+              {/* Time Slots */}
+              <Box>
+                <Typography fontWeight={500} mb={1}>
+                  Select Time Slot
+                </Typography>
+
+                <Grid container spacing={1}>
+                  <AnimatePresence>
+                    {slots.map((s, idx) => {
+                      const booked = isSlotBooked(s.start);
+                      const selected = slot?.start === s.start;
+
+                      return (
+                        <Grid key={s.start}>
+                          <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ delay: idx * 0.03 }}
+                          >
+                            <Button
+                              fullWidth
+                              size="small"
+                              disabled={booked}
+                              variant={selected ? 'contained' : 'outlined'}
+                              onClick={() => setSlot(s)}
+                            >
+                              {s.start}
+                            </Button>
+                          </motion.div>
+                        </Grid>
+                      );
+                    })}
+                  </AnimatePresence>
+                </Grid>
+              </Box>
+
+              <Button
+                size="large"
+                variant="contained"
+                disabled={!name || !title || !slot || !agree}
+                onClick={() => {
+                  setStep(2);
+                  setDialogOpen(true);
+                }}
+              >
+                Continue
+              </Button>
+            </Stack>
+          </Grid>
+        )}
       </Grid>
 
-      {/* ---------- BOOKING DIALOG ---------- */}
+      {/* Booking Dialog */}
       <Dialog
         open={dialogOpen}
         onClose={() => {
@@ -220,21 +441,9 @@ const CalendarMain = () => {
         }}
         fullWidth
         maxWidth="sm"
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            overflow: 'hidden',
-          },
-        }}
+        PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
       >
-        {/* ---------- HEADER ---------- */}
-        <Box
-          sx={{
-            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-            color: '#fff',
-            p: 3,
-          }}
-        >
+        <Box sx={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', p: 3 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" spacing={1} alignItems="center">
               <EventAvailableIcon />
@@ -242,49 +451,24 @@ const CalendarMain = () => {
                 Confirm Booking
               </Typography>
             </Stack>
-
             {step === 2 && <Chip label="Review" color="warning" sx={{ fontWeight: 600 }} />}
-
-            {step === 3 && (
-              <Chip
-                icon={<CheckCircleIcon />}
-                label="Paid"
-                color="success"
-                sx={{ fontWeight: 600 }}
-              />
-            )}
+            {step === 3 && <Chip icon={<CheckCircleIcon />} label="Paid" color="success" sx={{ fontWeight: 600 }} />}
           </Stack>
         </Box>
 
-        {/* ---------- BODY ---------- */}
         <Box p={4}>
           {step === 2 && (
             <Stack spacing={4} flexDirection={'column'}>
-              {/* Summary Card */}
-              <Box
-                sx={{
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 3,
-                  p: 3,
-                  bgcolor: 'grey.50',
-                }}
-              >
+              <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, p: 3, bgcolor: 'grey.50' }}>
                 <Stack spacing={1.5} flexDirection={'column'}>
                   <Typography fontWeight={700} fontSize={18}>
                     {title}
                   </Typography>
-
-                  <Typography color="text.secondary">
-                    {dayjs(dateKey).format('dddd, MMM D')}
-                  </Typography>
-
+                  <Typography color="text.secondary">{dayjs(dateKey).format('dddd, MMM D')}</Typography>
                   <Typography fontWeight={500}>
                     {slot?.start} – {slot?.end}
                   </Typography>
-
                   <Divider />
-
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Typography fontWeight={600}>Total</Typography>
                     <Typography fontWeight={700} fontSize={18}>
@@ -294,25 +478,11 @@ const CalendarMain = () => {
                 </Stack>
               </Box>
 
-              <Button
-                size="large"
-                variant="contained"
-                startIcon={<PaymentsIcon />}
-                sx={{
-                  borderRadius: 3,
-                  py: 1.5,
-                  fontWeight: 600,
-                }}
-                onClick={() => setStep(3)}
-              >
-                Pay ₹2500
+              <Button size="large" variant="contained" startIcon={<PaymentsIcon />} sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }} onClick={() => setStep(3)}>
+                Pay Online - ₹2500
               </Button>
 
-              <Button
-                variant="text"
-                onClick={() => setDialogOpen(false)}
-                sx={{ alignSelf: 'center' }}
-              >
+              <Button variant="text" onClick={() => setDialogOpen(false)} sx={{ alignSelf: 'center' }}>
                 Back
               </Button>
             </Stack>
@@ -321,26 +491,13 @@ const CalendarMain = () => {
           {step === 3 && (
             <Stack spacing={4} alignItems="center" flexDirection={'column'}>
               <CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
-
               <Typography variant="h6" fontWeight={700}>
                 Payment Successful
               </Typography>
-
               <Typography color="text.secondary" textAlign="center">
                 Your appointment has been reserved and confirmed.
               </Typography>
-
-              <Button
-                size="large"
-                variant="contained"
-                fullWidth
-                sx={{
-                  borderRadius: 3,
-                  py: 1.5,
-                  fontWeight: 600,
-                }}
-                onClick={confirmBooking}
-              >
+              <Button size="large" variant="contained" fullWidth sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }} onClick={confirmBooking}>
                 Confirm Booking
               </Button>
             </Stack>

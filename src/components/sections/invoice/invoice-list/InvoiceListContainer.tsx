@@ -9,6 +9,47 @@ import { useBreakpoints } from 'providers/BreakpointsProvider';
 import IconifyIcon from 'components/base/IconifyIcon';
 import StyledTextField from 'components/styled/StyledTextField';
 import InvoiceListTable from './InvoiceListTable';
+import { users } from 'data/users';
+
+/* -------------------------------------------------------------------------- */
+/*                         LOCAL STORAGE → TABLE ROW                           */
+/* -------------------------------------------------------------------------- */
+
+const STORAGE_KEY = 'create-invoice-form';
+
+const getInvoiceRowFromLocalStorage = () => {
+  if (typeof window === 'undefined') return null;
+
+  const raw = localStorage.getItem('create-invoice-form');
+  if (!raw) return null;
+
+  const data = JSON.parse(raw);
+
+  return {
+    id: data.invoiceDetails?.invoiceNumber ?? Date.now(),
+    invoiceNumber: data.invoiceDetails?.invoiceNumber,
+
+    client: {
+      name: data.invoiceTo?.name || 'Unknown',
+      avatar: users[0].avatar,
+      email: data.invoiceTo?.email || '',
+    },
+
+    amount: data.itemDetails?.reduce(
+      (sum: number, item: any) => sum,
+    ),
+
+    status: data.invoiceDetails?.status || 'pending',
+
+    // 🔴 MUST MATCH COLUMN FIELD
+    issueDate: data.deadline?.issueDate || null,
+  };
+};
+
+
+/* -------------------------------------------------------------------------- */
+/*                                 COMPONENT                                  */
+/* -------------------------------------------------------------------------- */
 
 type TabValue = 'all' | 'paid' | 'late' | 'sent' | 'draft';
 
@@ -23,8 +64,19 @@ const InvoiceListContainer = () => {
     items: [],
   });
 
+  /* ----------------------- APPEND LOCAL STORAGE DATA ----------------------- */
+
+  const storedInvoiceRow = getInvoiceRowFromLocalStorage();
+
+  const tableData = storedInvoiceRow
+    ? [...invoiceListTableRowData, storedInvoiceRow]
+    : invoiceListTableRowData;
+
+  /* ----------------------------- HANDLERS ---------------------------------- */
+
   const handleChange = (e: SyntheticEvent, newValue: TabValue) => {
     setValue(newValue);
+
     if (newValue === 'all') {
       setFilterMode({ items: [] });
     } else {
@@ -47,13 +99,14 @@ const InvoiceListContainer = () => {
     if (filterButtonEl && filterButtonEl === clickedEl) {
       setFilterButtonEl(null);
       apiRef.current?.hideFilterPanel();
-
       return;
     }
 
     setFilterButtonEl(clickedEl);
     apiRef.current?.showFilterPanel();
   };
+
+  /* ------------------------------ RENDER ----------------------------------- */
 
   return (
     <TabContext value={value}>
@@ -67,20 +120,13 @@ const InvoiceListContainer = () => {
         }}
       >
         <Box sx={{ order: { xs: 1, sm: 0 } }}>
-          <Stack
-            sx={{
-              justifyContent: 'space-between',
-            }}
-          >
-            <TabList onChange={handleChange} aria-label="invoice list tab">
-              <Tab label="All Invoice" value="all" />
-              <Tab label="Paid" value="paid" />
-              <Tab label="Late" value="late" />
-              {/* <Tab label="Sent" value="sent" />
-              <Tab label="Draft" value="draft" /> */}
-            </TabList>
-          </Stack>
+          <TabList onChange={handleChange} aria-label="invoice list tab">
+            <Tab label="All Invoice" value="all" />
+            <Tab label="Paid" value="paid" />
+            <Tab label="Late" value="late" />
+          </TabList>
         </Box>
+
         <Stack sx={{ gap: 1 }}>
           <Button
             shape={upMd ? undefined : 'square'}
@@ -91,13 +137,11 @@ const InvoiceListContainer = () => {
           >
             <IconifyIcon
               icon="mdi:filter-variant"
-              sx={{
-                fontSize: 20,
-                marginRight: { xs: 0, md: '4px' },
-              }}
+              sx={{ fontSize: 20, marginRight: { xs: 0, md: '4px' } }}
             />
             {upMd && <Box component="span">Filter</Box>}
           </Button>
+
           <StyledTextField
             id="search-box"
             type="search"
@@ -120,16 +164,11 @@ const InvoiceListContainer = () => {
           />
         </Stack>
       </Stack>
-      {['all', 'paid', 'late'].map((item) => (
-        <TabPanel
-          key={item}
-          value={item}
-          sx={{
-            p: 0,
-          }}
-        >
+
+      {(['all', 'paid', 'late'] as TabValue[]).map((item) => (
+        <TabPanel key={item} value={item} sx={{ p: 0 }}>
           <InvoiceListTable
-            data={invoiceListTableRowData}
+            data={tableData}
             filterModel={filterModel}
             onFilterModelChange={setFilterMode}
             apiRef={apiRef}

@@ -73,7 +73,7 @@ export const currencyFormat = (
 ) => {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'usd',
+    currency: 'INR',
     maximumFractionDigits: 2,
     ...options,
   }).format(amount);

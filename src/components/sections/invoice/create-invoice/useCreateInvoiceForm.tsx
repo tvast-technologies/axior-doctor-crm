@@ -2,6 +2,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+const STORAGE_KEY = 'create-invoice-form';
+
+export const saveToStorage = (data: CreateInvoiceFormSchemaValues) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
 /* -------------------------------------------------------------------------- */
 /*                                  TYPES                                     */
 /* -------------------------------------------------------------------------- */
@@ -182,7 +188,7 @@ export const useCreateInvoiceForm = () => {
       },
 
       invoiceDetails: {
-        invoiceNumber: null,
+        invoiceNumber: 45001,
         status: 'pending',
       },
 

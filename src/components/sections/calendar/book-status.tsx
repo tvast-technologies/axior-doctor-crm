@@ -4,11 +4,29 @@ import { useEffect, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PaymentsIcon from '@mui/icons-material/Payments';
-import { Box, Button, Chip, Dialog, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  Stack,
+  TextField,
+  Typography,
+  Grid,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { DateCalendar, PickersDay } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import { motion, AnimatePresence } from 'framer-motion';
+import NumberTextField from 'components/base/NumberTextField';
 
 type Booking = {
   id: string;
@@ -16,8 +34,14 @@ type Booking = {
   start: string;
   end: string;
   name: string;
+  email?: string;
+  phone: string;
+  age?: number;
   title: string;
   paid: boolean;
+  mode?: 'Online' | 'Offline';
+  location?: string;
+  sessionType?: 'New' | 'Follow';
 };
 
 const STORAGE_KEY = 'bookings';
@@ -41,22 +65,64 @@ const generateTimeSlots = (start = '09:00', end = '17:00', interval = 30) => {
   return slots;
 };
 
+/* ---------- RANDOM BLOCKED SLOTS ---------- */
+const getRandomBlockedSlots = (slots: { start: string; end: string }[]) => {
+  const blocked: string[] = [];
+  slots.forEach((s) => {
+    if (Math.random() < 0.15) blocked.push(s.start); // ~15% chance a slot is blocked
+  });
+  return blocked;
+};
+
 const BookingPage = () => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [step, setStep] = useState(1);
+  const [person, setPerson] = useState<'me' | 'other'>('me');
+
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState<number | ''>('');
   const [title, setTitle] = useState('');
   const [slot, setSlot] = useState<{ start: string; end: string } | null>(null);
 
-  const dateKey = selectedDate.format('YYYY-MM-DD');
+  const [mode, setMode] = useState<'Online' | 'Offline'>('Online');
+  const [location, setLocation] = useState('');
+  const [sessionType, setSessionType] = useState<'New' | 'Follow'>('New');
+  const [agree, setAgree] = useState(false);
+
   const slots = generateTimeSlots();
+  const [blockedSlots, setBlockedSlots] = useState<string[]>([]);
+
+  const dateKey = selectedDate?.format('YYYY-MM-DD') ?? '';
+
+  const isDateDisabled = (date: Dayjs) => {
+    const today = dayjs().startOf('day');
+
+    if (date.isBefore(today)) return true;
+
+    if (date.day() === 0 || date.day() === 6) return true;
+
+    const wednesdays: string[] = [];
+    let d = today;
+    let count = 0;
+    while (count < 4) {
+      if (d.day() === 3) {
+        wednesdays.push(d.format('YYYY-MM-DD'));
+        count++;
+      }
+      d = d.add(1, 'day');
+    }
+    if (wednesdays.includes(date.format('YYYY-MM-DD'))) return true;
+
+    return false;
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-
     if (stored) {
       setBookings(JSON.parse(stored));
     } else {
@@ -67,6 +133,8 @@ const BookingPage = () => {
           start: '10:00',
           end: '10:30',
           name: 'John Doe',
+          email: 'john@example.com',
+          phone: '9999999999',
           title: 'Demo Meeting',
           paid: true,
         },
@@ -76,6 +144,8 @@ const BookingPage = () => {
           start: '14:00',
           end: '14:30',
           name: 'Jane Smith',
+          email: 'jane@example.com',
+          phone: '8888888888',
           title: 'Consultation',
           paid: true,
         },
@@ -90,13 +160,21 @@ const BookingPage = () => {
   }, [bookings]);
 
   const isSlotBooked = (start: string) =>
-    bookings.some((b) => b.date === dateKey && b.start === start);
+    bookings.some((b) => b.date === dateKey && b.start === start) || blockedSlots.includes(start);
 
   const resetForm = () => {
     setStep(1);
     setName('');
+    setEmail('');
+    setPhone('');
+    setAge('');
     setTitle('');
     setSlot(null);
+    setMode('Online');
+    setLocation('');
+    setSessionType('New');
+    setAgree(false);
+    setPerson('me');
   };
 
   const confirmBooking = () => {
@@ -110,8 +188,14 @@ const BookingPage = () => {
         start: slot.start,
         end: slot.end,
         name,
+        email,
+        phone,
+        age: age === '' ? undefined : age,
         title,
         paid: true,
+        mode,
+        location,
+        sessionType,
       },
     ]);
 
@@ -119,7 +203,28 @@ const BookingPage = () => {
     resetForm();
   };
 
-  const eventsForDay = bookings.filter((b) => b.date === dateKey);
+  const meData = { name: 'Amit Sharma', phone: '6360318731', email: 'patient@gmail.com', age: 22 };
+
+  useEffect(() => {
+    if (person === 'me') {
+      setName(meData.name);
+      setPhone(meData.phone);
+      setEmail(meData.email);
+      setAge(meData.age);
+    } else {
+      setName('');
+      setPhone('');
+      setEmail('');
+      setAge('');
+    }
+  }, [person]);
+
+  /* ---------- UPDATE RANDOM BLOCKED SLOTS ON DATE CHANGE ---------- */
+  useEffect(() => {
+    if (!selectedDate) return;
+    setSlot(null);
+    setBlockedSlots(getRandomBlockedSlots(slots));
+  }, [selectedDate]);
 
   return (
     <Box p={4}>
@@ -127,91 +232,181 @@ const BookingPage = () => {
         Booking Calendar
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         {/* Calendar */}
-        <Grid container spacing={2} size={3}>
+        <Grid>
           <Typography variant="h6" mb={1}>
             Calendar
           </Typography>
 
           <DateCalendar
             value={selectedDate}
-            onChange={(d) => {
-              if (!d) return;
-              setSelectedDate(d);
-              // setDialogOpen(true);
-            }}
+            onChange={(d) => setSelectedDate(d)}
+            shouldDisableDate={isDateDisabled}
+            slots={{ day: PickersDay }}
           />
+
+          {/* Person Selector */}
+          {selectedDate && (
+            <Box mt={3}>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  value={person}
+                  onChange={(e) => setPerson(e.target.value as 'me' | 'other')}
+                >
+                  <FormControlLabel value="me" control={<Radio />} label="Me" />
+                  <FormControlLabel value="other" control={<Radio />} label="Other Person" />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+          )}
         </Grid>
 
-        <Grid container size={8}>
-          <Stack flexDirection={'column'}>
-            <Typography variant="h6" mb={1}>
-              Book an Appointment
-            </Typography>
-
-            <Typography variant="body2" color="text.secondary" mb={3}>
-              {dateKey}
-            </Typography>
-          </Stack>
-
-          <Stack spacing={3} flexDirection={'column'}>
-            <TextField
-              label="Your Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Appointment Name"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              fullWidth
-            />
-
-            <Box>
-              <Typography fontWeight={500} mb={1}>
-                Select Time Slot
+        {/* Booking Form */}
+        {selectedDate && (
+          <Grid>
+            <Stack flexDirection={'column'} spacing={2}>
+              <Typography variant="h6">Book an Appointment</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {dateKey}
               </Typography>
 
-              <Grid container spacing={1}>
-                {slots.map((s) => {
-                  const booked = isSlotBooked(s.start);
-                  const selected = slot?.start === s.start;
+              <TextField
+                label="Your Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+              />
 
-                  return (
-                    <Grid key={s.start}>
-                      <Button
-                        fullWidth
-                        size="small"
-                        disabled={booked}
-                        variant={selected ? 'contained' : 'outlined'}
-                        onClick={() => setSlot(s)}
-                      >
-                        {s.start}
-                      </Button>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </Box>
+              <TextField
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+              />
 
-            <Button
-              size="large"
-              variant="contained"
-              disabled={!name || !title || !slot}
-              onClick={() => {
-                (setStep(2), setDialogOpen(true));
-              }}
-            >
-              Continue
-            </Button>
-          </Stack>
-        </Grid>
+              <NumberTextField
+                label="Phone Number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                fullWidth
+              />
+
+              <NumberTextField
+                label="Age"
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value))}
+                fullWidth
+              />
+
+              <TextField
+                label="Appointment Name"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                fullWidth
+              />
+
+              {/* Mode of Visit */}
+              <FormControl component="fieldset">
+                <Typography fontWeight={500} mb={1}>
+                  Mode of Visit
+                </Typography>
+                <RadioGroup
+                  row
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as 'Online' | 'Offline')}
+                >
+                  <FormControlLabel value="Online" control={<Radio />} label="Online" />
+                  <FormControlLabel value="Offline" control={<Radio />} label="Offline" />
+                </RadioGroup>
+              </FormControl>
+
+              {mode === 'Offline' && (
+                <FormControl fullWidth>
+                  <InputLabel>Location</InputLabel>
+                  <Select value={location} onChange={(e) => setLocation(e.target.value)}>
+                    <MenuItem value="HSR">HSR</MenuItem>
+                    <MenuItem value="Kormangala">Kormangala</MenuItem>
+                    <MenuItem value="Banashankari">Banashankari</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+
+              {/* Session Type */}
+              <FormControl component="fieldset">
+                <Typography fontWeight={500} mb={1}>
+                  Session Type
+                </Typography>
+                <RadioGroup
+                  row
+                  value={sessionType}
+                  onChange={(e) => setSessionType(e.target.value as 'New' | 'Follow')}
+                >
+                  <FormControlLabel value="New" control={<Radio />} label="New" />
+                  <FormControlLabel value="Follow" control={<Radio />} label="Follow" />
+                </RadioGroup>
+              </FormControl>
+
+              {/* Terms */}
+              <FormControlLabel
+                control={<Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
+                label="I agree to the terms and conditions"
+              />
+
+              {/* Time Slots with animation */}
+              <Box>
+                <Typography fontWeight={500} mb={1}>
+                  Select Time Slot
+                </Typography>
+
+                <Grid container spacing={1}>
+                  <AnimatePresence>
+                    {slots.map((s, idx) => {
+                      const booked = isSlotBooked(s.start);
+                      const selected = slot?.start === s.start;
+
+                      return (
+                        <Grid key={s.start}>
+                          <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ delay: idx * 0.03 }}
+                          >
+                            <Button
+                              fullWidth
+                              size="small"
+                              disabled={booked}
+                              variant={selected ? 'contained' : 'outlined'}
+                              onClick={() => setSlot(s)}
+                            >
+                              {s.start}
+                            </Button>
+                          </motion.div>
+                        </Grid>
+                      );
+                    })}
+                  </AnimatePresence>
+                </Grid>
+              </Box>
+
+              <Button
+                size="large"
+                variant="contained"
+                disabled={!name || !title || !slot || !agree}
+                onClick={() => {
+                  setStep(2);
+                  setDialogOpen(true);
+                }}
+              >
+                Continue
+              </Button>
+            </Stack>
+          </Grid>
+        )}
       </Grid>
 
-      {/* ---------- BOOKING DIALOG ---------- */}
       <Dialog
         open={dialogOpen}
         onClose={() => {
@@ -220,14 +415,9 @@ const BookingPage = () => {
         }}
         fullWidth
         maxWidth="sm"
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            overflow: 'hidden',
-          },
-        }}
+        PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
       >
-        {/* ---------- HEADER ---------- */}
+        {/* Header */}
         <Box
           sx={{
             background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
@@ -244,7 +434,6 @@ const BookingPage = () => {
             </Stack>
 
             {step === 2 && <Chip label="Review" color="warning" sx={{ fontWeight: 600 }} />}
-
             {step === 3 && (
               <Chip
                 icon={<CheckCircleIcon />}
@@ -256,7 +445,6 @@ const BookingPage = () => {
           </Stack>
         </Box>
 
-        {/* ---------- BODY ---------- */}
         <Box p={4}>
           {step === 2 && (
             <Stack spacing={4} flexDirection={'column'}>
@@ -298,14 +486,20 @@ const BookingPage = () => {
                 size="large"
                 variant="contained"
                 startIcon={<PaymentsIcon />}
-                sx={{
-                  borderRadius: 3,
-                  py: 1.5,
-                  fontWeight: 600,
-                }}
+                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
                 onClick={() => setStep(3)}
               >
-                Pay ₹2500
+                Pay Online - ₹2500
+              </Button>
+
+              <Button
+                size="large"
+                variant="contained"
+                startIcon={<PaymentsIcon />}
+                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                onClick={() => setStep(3)}
+              >
+                Pay Cash - ₹2500
               </Button>
 
               <Button
@@ -334,11 +528,7 @@ const BookingPage = () => {
                 size="large"
                 variant="contained"
                 fullWidth
-                sx={{
-                  borderRadius: 3,
-                  py: 1.5,
-                  fontWeight: 600,
-                }}
+                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
                 onClick={confirmBooking}
               >
                 Confirm Booking

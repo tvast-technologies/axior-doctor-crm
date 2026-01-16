@@ -48,8 +48,8 @@ const ItemDetailsTableForm = () => {
     control,
     name: 'itemDetails',
   });
-  // const adjustments = watch('adjustment');
-  // const orderCharges = watch('orderCharges');
+  const adjustments = watch('adjustment');
+  const orderCharges = watch('orderCharges');
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -152,7 +152,7 @@ const ItemDetailsTableForm = () => {
             {currencyFormat(subTotal)}
           </Typography>
         </Stack>
-        {/* <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
+        <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
           <Typography color="error.main" variant="body2" sx={{ flexGrow: 1 }}>
             Discount
           </Typography>
@@ -171,7 +171,7 @@ const ItemDetailsTableForm = () => {
           >
             {currencyFormat((adjustments.tax && adjustments.tax) || 0)}
           </Typography>
-        </Stack> */}
+        </Stack>
         {/* <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
           <Typography color="text.secondary" variant="body2" sx={{ flexGrow: 1 }}>
             Shipping cost
@@ -189,7 +189,7 @@ const ItemDetailsTableForm = () => {
           <Typography variant="body2" sx={{ flexGrow: 1 }}>
             Total
           </Typography>
-          {/* <Typography variant="subtitle2" sx={{ fontWeight: 700, width: 130 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, width: 130 }}>
             {currencyFormat(
               getTotalPrice(
                 subTotal,
@@ -198,7 +198,7 @@ const ItemDetailsTableForm = () => {
                 Number(orderCharges.shippingCost),
               ),
             )}
-          </Typography> */}
+          </Typography>
         </Stack>
         <Divider />
       </SortableDnd>
@@ -214,6 +214,7 @@ interface TableRowFormProps {
 
 const TableRowForm = ({ index, field, remove }: TableRowFormProps) => {
   const { currencyFormat, currencySymbol } = useNumberFormat();
+  
   const {
     register,
     control,

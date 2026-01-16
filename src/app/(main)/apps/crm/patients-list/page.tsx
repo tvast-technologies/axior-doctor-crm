@@ -43,7 +43,7 @@ const patients = [
       firstName: 'Amit',
       lastName: 'Sharma',
       personalEmail: 'patient@gmail.com',
-      phoneNumber: 'XXX-XXX-XX55',
+      phoneNumber: '6360318731',
       profileImage: users[0].avatar,
     },
     lastVisit: '05 Jan 2026',
@@ -58,14 +58,14 @@ const patients = [
       firstName: 'Priya',
       lastName: 'Verma',
       personalEmail: 'priya.verma@gmail.com',
-      phoneNumber: 'XXX-XXX-XX89',
+      phoneNumber: '8523465972',
       profileImage: users[1].avatar,
     },
-    lastVisit: '30 Dec 2025',
+    lastVisit: '01 Feb 2026',
     paymentDate: '2026-02-01',
     age: '24',
     lastInvoiceAmount: '₹ 5,500',
-    status: 'pending',
+    status: 'upcoming',
   },
   {
     id: 'pat003',
@@ -73,14 +73,14 @@ const patients = [
       firstName: 'Rahul',
       lastName: 'Mehta',
       personalEmail: 'rahul.mehta@gmail.com',
-      phoneNumber: 'XXX-XXX-XX10',
+      phoneNumber: '9163263691',
       profileImage: users[2].avatar,
     },
-    lastVisit: '25 Oct 2025',
-    paymentDate: '2025-12-01',
+    lastVisit: '10 Feb 2026',
+    paymentDate: '2026-02-10',
     age: '20',
     lastInvoiceAmount: '₹ 2,000',
-    status: 'late',
+    status: 'Upcoming',
   },
   {
     id: 'pat004',
@@ -88,7 +88,7 @@ const patients = [
       firstName: 'Sneha',
       lastName: 'Iyer',
       personalEmail: 'sneha.iyer@gmail.com',
-      phoneNumber: 'XXX-XXX-XX90',
+      phoneNumber: '7894561235',
       profileImage: users[3].avatar,
     },
     lastVisit: '18 Aug 2025',
@@ -103,7 +103,7 @@ const patients = [
       firstName: 'Rohit',
       lastName: 'Singh',
       personalEmail: 'rohit.singh@gmail.com',
-      phoneNumber: 'XXX-XXX-XX98',
+      phoneNumber: '9145789236',
       profileImage: users[4].avatar,
     },
     lastVisit: '31 Dec 2025',
@@ -253,7 +253,7 @@ const PatientsBoard = () => {
       {
         field: 'age',
         headerName: 'Age',
-        minWidth: 100,
+        minWidth: 80,
       },
       {
         field: 'phone',
@@ -269,7 +269,7 @@ const PatientsBoard = () => {
       },
       {
         field: 'status',
-        headerName: 'Payment Status',
+        headerName: 'Status',
         filterable: true,
         // valueGetter: ({ status }) => status,
         minWidth: 200,
@@ -288,7 +288,7 @@ const PatientsBoard = () => {
                 color={params.row.status === 'late' ? 'error' : undefined}
                 sx={{ fontWeight: 400 }}
               >
-                {params.row.status === 'paid' ? 'Paid' : 'Due'} on{' '}
+                {params.row.status === 'paid' ? 'Paid' : 'Coming'} on{' '}
                 {dayjs(params.row.paymentDate).format('MMM DD, YYYY')}
               </Typography>
             </Stack>
