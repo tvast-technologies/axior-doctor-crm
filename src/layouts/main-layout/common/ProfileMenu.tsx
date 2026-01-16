@@ -165,7 +165,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
           </Box>
         </Stack>
         <Divider />
-        <Box sx={{ py: 1 }}>
+        {/* <Box sx={{ py: 1 }}>
           <ProfileMenuItem icon="material-symbols:accessible-forward-rounded" onClick={handleClose}>
             Accessibility
           </ProfileMenuItem>
@@ -182,8 +182,8 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
             <Switch checked={isDark} onChange={() => setThemeMode()} sx={{ ml: 'auto' }} />
           </ProfileMenuItem>
         </Box>
-        <Divider />
-        <Box sx={{ py: 1 }}>
+        <Divider /> */}
+        {/* <Box sx={{ py: 1 }}>
           <ProfileMenuItem
             icon="material-symbols:manage-accounts-outline-rounded"
             onClick={handleClose}
@@ -199,7 +199,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
             Help Center
           </ProfileMenuItem>
         </Box>
-        <Divider />
+        <Divider /> */}
         <Box sx={{ py: 1 }}>
           {data?.user ? (
             <ProfileMenuItem

@@ -204,7 +204,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
                 </Typography>
               </TableCell>
             </TableRow>
-            <TableRow
+            {/* <TableRow
               sx={{
                 '& td': {
                   py: '13px !important',
@@ -219,7 +219,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
                   {currencyFormat(invoice.shippingCost)}
                 </Typography>
               </TableCell>
-            </TableRow>
+            </TableRow> */}
             <TableRow
               sx={{
                 '& td': {
@@ -254,7 +254,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
         <Typography variant="body2">{invoice.note}</Typography>
       </Stack>
 
-      <Paper variant="elevation" elevation={0} background={1} sx={{ py: 1, textAlign: 'center' }}>
+      {/* <Paper variant="elevation" elevation={0} background={1} sx={{ py: 1, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Creating with{' '}
           <Typography component="span" sx={{ fontWeight: 700, color: 'text.secondary' }}>
@@ -262,7 +262,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
           </Typography>
           | 2025 &copy; <Link href="https://themewagon.com/">ThemeWagon</Link>
         </Typography>
-      </Paper>
+      </Paper> */}
     </>
   );
 };

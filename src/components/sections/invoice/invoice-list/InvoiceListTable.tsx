@@ -66,7 +66,7 @@ const InvoiceListTable = ({
             <Link
               variant="body2"
               sx={{ fontWeight: 400 }}
-              href={paths.invoicePreviewWithId(id.toString())}
+              // href={paths.invoicePreviewWithId(id.toString())}
             >
               #{id}
             </Link>

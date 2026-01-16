@@ -48,8 +48,8 @@ const ItemDetailsTableForm = () => {
     control,
     name: 'itemDetails',
   });
-  const adjustments = watch('adjustment');
-  const orderCharges = watch('orderCharges');
+  // const adjustments = watch('adjustment');
+  // const orderCharges = watch('orderCharges');
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -123,7 +123,7 @@ const ItemDetailsTableForm = () => {
                     startIcon={<IconifyIcon icon={'material-symbols:add-circle-rounded'} />}
                     onClick={() => {
                       append({
-                        type: 'service',
+                        type: 'consultation',
                         description: '',
                         quantity: 0,
                         price: 0,
@@ -152,7 +152,7 @@ const ItemDetailsTableForm = () => {
             {currencyFormat(subTotal)}
           </Typography>
         </Stack>
-        <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
+        {/* <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
           <Typography color="error.main" variant="body2" sx={{ flexGrow: 1 }}>
             Discount
           </Typography>
@@ -171,8 +171,8 @@ const ItemDetailsTableForm = () => {
           >
             {currencyFormat((adjustments.tax && adjustments.tax) || 0)}
           </Typography>
-        </Stack>
-        <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
+        </Stack> */}
+        {/* <Stack sx={{ py: '13px', textAlign: 'end', alignItems: 'center' }}>
           <Typography color="text.secondary" variant="body2" sx={{ flexGrow: 1 }}>
             Shipping cost
           </Typography>
@@ -183,13 +183,13 @@ const ItemDetailsTableForm = () => {
           >
             {currencyFormat((orderCharges.shippingCost && orderCharges.shippingCost) || 0)}
           </Typography>
-        </Stack>
+        </Stack> */}
         <Divider />
         <Stack sx={{ py: '17px', textAlign: 'end', alignItems: 'center' }}>
           <Typography variant="body2" sx={{ flexGrow: 1 }}>
             Total
           </Typography>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, width: 130 }}>
+          {/* <Typography variant="subtitle2" sx={{ fontWeight: 700, width: 130 }}>
             {currencyFormat(
               getTotalPrice(
                 subTotal,
@@ -198,7 +198,7 @@ const ItemDetailsTableForm = () => {
                 Number(orderCharges.shippingCost),
               ),
             )}
-          </Typography>
+          </Typography> */}
         </Stack>
         <Divider />
       </SortableDnd>
@@ -266,8 +266,9 @@ const TableRowForm = ({ index, field, remove }: TableRowFormProps) => {
                 },
               }}
             >
-              <MenuItem value="service">Service</MenuItem>
-              <MenuItem value="product">Product</MenuItem>
+              <MenuItem value="consultation">Consultation</MenuItem>
+              <MenuItem value="test">Test</MenuItem>
+              <MenuItem value="medicine">Medicine</MenuItem>
             </StyledTextField>
           )}
         />

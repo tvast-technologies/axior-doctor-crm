@@ -26,11 +26,12 @@ const LeadDetailsHeader = () => {
 
   const patientData = {
     personalInfo: {
-      firstName: 'Patient1',
-      lastName: ' ',
+      firstName: 'Amit',
+      lastName: 'Sharma',
       personalEmail: 'patient1@test.com',
-      phoneNumber: '1234567890',
-      profileImage: users[6].avatar
+      phoneNumber: '1234567855',
+      profileImage: users[0].avatar,
+      age: "22"
     },
     companyInfo: {},
     leadInfo: {},
@@ -55,13 +56,13 @@ const LeadDetailsHeader = () => {
 
           <Stack gap={{ xs: 1, md: 2 }} sx={{ alignItems: 'center' }}>
             <Avatar
-              src={users[6].avatar}
+              src={users[0].avatar}
               sx={{ width: { xs: 40, md: 56 }, height: { xs: 40, md: 56 } }}
             />
 
             <Stack gap={0.75} sx={{ alignItems: 'center' }}>
               <Typography variant="h4" sx={{ fontSize: { xs: 20, md: 28 } }}>
-                Patient 1
+                Amit Sharma
               </Typography>
 
               <Button
@@ -96,7 +97,7 @@ const LeadDetailsHeader = () => {
             </Box>
           </Button>
 
-          <Button
+          {/* <Button
             variant="soft"
             shape={downSm ? 'square' : undefined}
             color="neutral"
@@ -107,7 +108,7 @@ const LeadDetailsHeader = () => {
               More Action
             </Box>
             <IconifyIcon icon="material-symbols:expand-more" />
-          </Button>
+          </Button> */}
 
           <CRMDropdownMenu
             anchorEl={anchorEl}

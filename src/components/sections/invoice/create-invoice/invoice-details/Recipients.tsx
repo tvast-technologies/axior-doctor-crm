@@ -15,19 +15,11 @@ const Recipients = () => {
     formState: { errors },
   } = useFormContext<CreateInvoiceFormSchemaValues>();
 
-  const [invoiceFromOpen, setInvoiceFromOpen] = useState(false);
   const [invoiceToOpen, setInvoiceToOpen] = useState(false);
 
-  const invoiceForm = watch('invoiceFrom');
+  const invoiceFrom = watch('invoiceFrom'); // hardcoded
   const invoiceTo = watch('invoiceTo');
-  const invoiceFormSubmitHandler = (data: RecipientItem) => {
-    setValue('invoiceFrom.name', data.name);
-    setValue('invoiceFrom.phone', data.phone);
-    setValue('invoiceFrom.email', data.email);
-    setValue('invoiceFrom.address', data.location);
 
-    clearErrors('invoiceFrom');
-  };
   const invoiceToSubmitHandler = (data: RecipientItem) => {
     setValue('invoiceTo.name', data.name);
     setValue('invoiceTo.email', data.email);
@@ -36,64 +28,45 @@ const Recipients = () => {
     clearErrors('invoiceTo');
   };
 
-  const hasInvoiceFromError = !!errors.invoiceFrom;
-  const hasInvoiceToError = !!errors.invoiceTo;
-
   return (
     <>
       <Paper
-        variant="elevation"
         elevation={0}
-        background={1}
-        className={clsx({
-          'Mui-error': hasInvoiceFromError || hasInvoiceToError,
-        })}
         sx={{
           p: { xs: 3, md: 5 },
           borderRadius: 4,
-          outline: 0,
-          '&.MuiPaper-root.Mui-error': {
-            bgcolor: 'error.lighter',
-          },
         }}
       >
-        <Grid container spacing={{ xs: 3, md: 5, lg: 10 }} sx={{ justifyContent: 'space-between' }}>
+        <Grid container spacing={{ xs: 3, md: 5 }}>
+          {/* Doctor (Hardcoded) */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <RecipientCard title="Invoice From" data={invoiceForm} setOpen={setInvoiceFromOpen} />
+            <RecipientCard title="Doctor" data={invoiceFrom} editButton={false} />
           </Grid>
+
+          {/* Patient */}
           <Grid size={{ xs: 12, md: 6 }}>
-            <RecipientCard title="Invoice To" data={invoiceTo} setOpen={setInvoiceToOpen} />
+            <RecipientCard title="Patient" data={invoiceTo} setOpen={setInvoiceToOpen} />
           </Grid>
         </Grid>
       </Paper>
-      {hasInvoiceFromError && (
+
+      {errors.invoiceTo && (
         <FormHelperText error sx={{ mx: '14px' }}>
-          Invoice sender information is required.
+          Patient information is required.
         </FormHelperText>
       )}
-      {hasInvoiceToError && (
-        <FormHelperText error sx={{ mx: '14px' }}>
-          Invoice recipient information is required.
-        </FormHelperText>
-      )}
-      <RecipientsFormDialogue
-        open={invoiceFromOpen}
-        title="Select Admin"
-        handleDialogClose={() => setInvoiceFromOpen(false)}
-        onSubmit={invoiceFormSubmitHandler}
-        subtitle="Select a admin to continue with the process."
-        mode="admin"
-      ></RecipientsFormDialogue>
+
       <RecipientsFormDialogue
         open={invoiceToOpen}
-        title="Select Customer"
+        title="Select Patient"
+        subtitle="Select a patient to create invoice"
         handleDialogClose={() => setInvoiceToOpen(false)}
-        subtitle="Select a customer to continue with the process."
         onSubmit={invoiceToSubmitHandler}
-        mode="customer"
-      ></RecipientsFormDialogue>
+        mode="patient"
+      />
     </>
   );
 };
 
 export default Recipients;
+

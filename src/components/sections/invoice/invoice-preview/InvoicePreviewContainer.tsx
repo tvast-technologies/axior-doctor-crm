@@ -25,13 +25,13 @@ const InvoicePreviewContainer = ({ invoiceDate }: InvoicePreviewContainerProps) 
           </Paper>
         </Container>
       </SimpleBar>
-      <Paper
+      {/* <Paper
         variant="elevation"
         elevation={0}
         sx={{ p: { xs: 3, md: 5 }, border: 1, borderColor: 'divider', maxWidth: 960, mx: 'auto' }}
       >
         <InvoiceHistory />
-      </Paper>
+      </Paper> */}
     </>
   );
 };

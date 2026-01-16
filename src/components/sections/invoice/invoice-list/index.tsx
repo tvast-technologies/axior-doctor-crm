@@ -10,7 +10,7 @@ const InvoiceLists = () => {
         title="Invoice list"
         breadcrumb={[
           { label: 'Home', url: '/' },
-          { label: 'Invoice', url: paths.invoiceList },
+          // { label: 'Invoice', url: paths.invoiceList },
           { label: 'Invoice List', active: true },
         ]}
         actionComponent={

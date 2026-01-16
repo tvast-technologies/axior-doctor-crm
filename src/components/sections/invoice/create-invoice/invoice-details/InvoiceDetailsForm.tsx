@@ -31,6 +31,7 @@ const InvoiceDetailsForm = () => {
               <StyledTextField
                 type="number"
                 placeholder="Invoice number"
+                value={45001}
                 variant="filled"
                 size="large"
                 {...register('invoiceDetails.invoiceNumber')}
@@ -64,8 +65,9 @@ const InvoiceDetailsForm = () => {
                       error={!!errors.invoiceDetails?.status}
                       fullWidth
                     >
-                      <MenuItem value="draft">Draft</MenuItem>
-                      <MenuItem value="sent">Sent</MenuItem>
+                      {/* <MenuItem value="draft">Draft</MenuItem> */}
+                      {/* <MenuItem value="sent">Sent</MenuItem> */}
+                      <MenuItem value="pending">Pending</MenuItem>
                       <MenuItem value="paid">Paid</MenuItem>
                       <MenuItem value="late">Late</MenuItem>
                     </Select>
@@ -139,7 +141,7 @@ const InvoiceDetailsForm = () => {
         </InvoiceDetailsFormSections>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      {/* <Grid size={{ xs: 12, md: 6 }}>
         <InvoiceDetailsFormSections title="Order charges">
           <Grid container spacing={1} sx={{ width: 1 }}>
             <Grid size={6}>
@@ -193,9 +195,9 @@ const InvoiceDetailsForm = () => {
             </Grid>
           </Grid>
         </InvoiceDetailsFormSections>
-      </Grid>
+      </Grid> */}
 
-      <Grid size={{ xs: 12, md: 6 }}>
+      {/* <Grid size={{ xs: 12, md: 6 }}>
         <InvoiceDetailsFormSections title="Adjustments">
           <Grid container spacing={1} sx={{ width: 1 }}>
             <Grid size={6}>
@@ -266,7 +268,7 @@ const InvoiceDetailsForm = () => {
             </Grid>
           </Grid>
         </InvoiceDetailsFormSections>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

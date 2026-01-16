@@ -14,7 +14,7 @@ const LeadDetails = () => {
 
       <Grid container>
         {contactInfoData.map((item) => (
-          <Grid key={item.attribute} size={{ xs: 12, sm: 6, md: 4, xl: 2 }}>
+          <Grid key={item.attribute} size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
             <ContactInfo attribute={item.attribute} value={item.value} />
           </Grid>
         ))}

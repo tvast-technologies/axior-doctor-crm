@@ -16,7 +16,8 @@ export interface Deal {
 }
 
 export const contactInfoData: { attribute: string; value: ReactNode }[] = [
-  { attribute: 'Title', value: <Typography variant="body2">Patient</Typography> },
+  { attribute: 'First Name', value: <Typography variant="body2">Amit</Typography> },
+  { attribute: 'Last Name', value: <Typography variant="body2">Sharma</Typography> },
   // {
   //   attribute: 'Account',
   //   value: (
@@ -25,19 +26,21 @@ export const contactInfoData: { attribute: string; value: ReactNode }[] = [
   //     </Typography>
   //   ),
   // },
-  { attribute: 'Location', value: <Typography variant="body2">Bangalore</Typography> },
+  { attribute: 'Age', value: <Typography variant="body2">22</Typography> },
   {
     attribute: 'Email',
     value: <CopyableText text="patient@gmail.com" link href="mailto:patient@gmail.com" />,
   },
   {
     attribute: 'Phone No.',
-    value: <CopyableText text="+91 80703 18312" link href="tel:+91 80703 18312" />,
+    value: <CopyableText text="+91 XXX-XXX-XX55" link href="tel:+91 80703 18355" />,
   },
-  {
-    attribute: 'Secondary Contact',
-    value: <Chip label="Gerard P." avatar={<Avatar src={users[7].avatar} />} variant="soft" />,
-  },
+  { attribute: 'Last Visit on', value: <Typography variant="body2">05-01-2026</Typography> },
+  { attribute: 'Last Invoice amount', value: <Typography variant="body2">₹ 4,500</Typography> },
+  // {
+  //   attribute: 'Secondary Contact',
+  //   value: <Chip label="Gerard P." avatar={<Avatar src={users[7].avatar} />} variant="soft" />,
+  // },
 ];
 
 export const ongoingDealsData: Deal[] = [
@@ -75,4 +78,3 @@ export const ongoingDealsData: Deal[] = [
     ],
   },
 ];
-

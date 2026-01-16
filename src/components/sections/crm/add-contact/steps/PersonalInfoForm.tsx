@@ -31,6 +31,7 @@ export interface PersonalInfo {
     status: string;
     linkedInUrl?: string;
     note?: string;
+    age: string;
   };
 }
 export const personalInfoSchema = yup.object({
@@ -42,11 +43,12 @@ export const personalInfoSchema = yup.object({
     personalEmail: yup.string().email('Invalid email format').required('This field is required'),
     phoneNumber: yup.string().required('Phone Number is required'),
     alternatePhoneNumber: yup.string().notRequired(),
-    dateOfBirth: yup.string().required('This field is required'),
-    jobTitle: yup.string().required('This field is required'),
-    status: yup.string().required('This field is required'),
-    linkedInUrl: yup.string().url('Invalid URL').optional(),
-    note: yup.string().optional(),
+    age: yup.string().notRequired()
+    // dateOfBirth: yup.string().required('This field is required'),
+    // jobTitle: yup.string().required('This field is required'),
+    // status: yup.string().required('This field is required'),
+    // linkedInUrl: yup.string().url('Invalid URL').optional(),
+    // note: yup.string().optional(),
   }),
 });
 
@@ -154,7 +156,7 @@ const PersonalInfoForm = ({ label }: { label: string }) => {
                 {...register('personalInfo.alternatePhoneNumber')}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl variant="filled" fullWidth={true}>
                 <Controller
                   name="personalInfo.dateOfBirth"
@@ -181,6 +183,15 @@ const PersonalInfoForm = ({ label }: { label: string }) => {
                   }}
                 />
               </FormControl>
+            </Grid> */}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <NumberTextField
+                fullWidth
+                label="Age"
+                error={!!errors.personalInfo?.age}
+                helperText={errors.personalInfo?.age?.message}
+                {...register('personalInfo.age')}
+              />
             </Grid>
           </Grid>
         </ContactFormSection>

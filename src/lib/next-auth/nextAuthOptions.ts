@@ -45,8 +45,8 @@ export const authOptions: NextAuthOptions = {
               const data = {
                     id: '01',
                     email: credentials.email,
-                    name: 'Patient1',
-                    image: users[13].avatar,
+                    name: 'Amit Sharma',
+                    image: users[0].avatar,
                     designation: 'Patient',
                   };
                   res = {ok: true, user: data};

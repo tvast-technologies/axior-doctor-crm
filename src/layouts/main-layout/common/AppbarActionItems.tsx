@@ -23,8 +23,8 @@ const AppbarActionItems = ({ type = 'default', sx, searchComponent }: AppbarActi
       }}
     >
       {searchComponent}
-      <LanguageMenu type={type} />
-      <ThemeToggler type={type} />
+      {/* <LanguageMenu type={type} /> */}
+      {/* <ThemeToggler type={type} /> */}
       {/* <NotificationMenu type={type} /> */}
       <ProfileMenu type={type} />
     </Stack>

@@ -76,8 +76,8 @@ const InvoiceListContainer = () => {
               <Tab label="All Invoice" value="all" />
               <Tab label="Paid" value="paid" />
               <Tab label="Late" value="late" />
-              <Tab label="Sent" value="sent" />
-              <Tab label="Draft" value="draft" />
+              {/* <Tab label="Sent" value="sent" />
+              <Tab label="Draft" value="draft" /> */}
             </TabList>
           </Stack>
         </Box>
@@ -120,7 +120,7 @@ const InvoiceListContainer = () => {
           />
         </Stack>
       </Stack>
-      {['all', 'paid', 'late', 'sent', 'draft'].map((item) => (
+      {['all', 'paid', 'late'].map((item) => (
         <TabPanel
           key={item}
           value={item}

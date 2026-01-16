@@ -52,44 +52,20 @@ const sitemap: MenuItem[] = [
     icon: 'material-symbols:widgets-outline-rounded',
     items: [
       {
-        name: 'Patient',
-        pathName: 'patient',
-        key: 'Patient',
-        icon: 'material-symbols:phone-in-talk-outline-rounded',
+        icon: 'material-symbols:person-outline',
+        name: 'Patient details',
+        key: 'Patient details',
+        path: paths.leadDetails,
+        pathName: 'lead-details',
         active: true,
-        items: [
-          // {
-          //   name: 'Booking status',
-          //   key: 'Booking status',
-          //   path: paths.booking_status,
-          //   pathName: 'deals',
-          //   active: true,
-          // },
-          {
-            name: 'Patient details',
-            key: 'Patient details',
-            path: paths.leadDetails,
-            pathName: 'lead-details',
-            active: true,
-          },
-        ],
       },
       {
         name: 'Appointments',
         key: 'Appointments',
-        pathName: 'events',
-        icon: 'material-symbols:calendar-clock-outline-rounded',
         active: true,
-        items: [
-          {
-            name: 'Calendar',
-            key: 'calendar',
-            path: paths.book_event,
-            pathName: 'calendar',
-            icon: 'material-symbols:calendar-month-outline',
-            active: true,
-          },
-        ],
+        path: paths.book_event,
+        pathName: 'book_event',
+        icon: 'material-symbols:calendar-month-outline',
       },
     ],
   },
@@ -104,7 +80,7 @@ const sitemap: MenuItem[] = [
         name: 'Patient',
         pathName: 'patient',
         key: 'Patient',
-        icon: 'material-symbols:phone-in-talk-outline-rounded',
+        icon: 'material-symbols:person-outline',
         active: true,
         items: [
           // {
@@ -133,26 +109,10 @@ const sitemap: MenuItem[] = [
       {
         name: 'Appointments',
         key: 'Appointments',
-        pathName: 'events',
-        icon: 'material-symbols:calendar-clock-outline-rounded',
         active: true,
-        items: [
-          // {
-          //   name: 'Book an appointment',
-          //   key: 'Book an appointment',
-          //   path: paths.createEvent,
-          //   pathName: 'create-event',
-          //   active: true,
-          // },
-          {
-            name: 'Calendar',
-            key: 'calendar',
-            path: paths.calendar,
-            pathName: 'calendar',
-            icon: 'material-symbols:calendar-month-outline',
-            active: true,
-          },
-        ],
+        path: paths.calendar,
+        pathName: 'calendar',
+        icon: 'material-symbols:calendar-month-outline',
       },
       {
         name: 'Invoice',
