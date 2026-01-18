@@ -6,6 +6,22 @@ export default withAuth({
     signIn: paths.defaultJwtLogin,
     signOut: paths.defaultLoggedOut,
   },
+  callbacks: {
+    authorized: ({ token, req }) => {
+      const { pathname } = req.nextUrl;
+
+      if (
+        pathname.startsWith('/anonymous-booking') ||
+        pathname.startsWith('/authentication/default/logged-out')
+      ) {
+        return true;
+      }
+
+      return !!token;
+    },
+  },
 });
 
-export const config = { matcher: [] };
+export const config = {
+  matcher: ['/((?!api|_next|favicon.ico).*)'],
+};
