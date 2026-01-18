@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, SvgIcon, SvgIconProps, Typography, typographyClasses } from '@mui/material';
-import LogoImage from 'assets/images/Logo.svg';
+import LogoImage from 'assets/images/Logo.jpeg';
 import { useSettingsContext } from 'providers/SettingsProvider';
 import { rootPaths } from 'routes/paths';
 import Image from 'components/base/Image';
@@ -140,10 +140,9 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
       </SvgIcon> */}
       <Image
         src={LogoImage}
-        alt="Aixor Doctor CRM"
+        alt="Kumar Cardiology"
         sx={{
-          width: 200,
-          height: 100,
+          width: 250,
           marginTop: '1vh',
         }}
       />

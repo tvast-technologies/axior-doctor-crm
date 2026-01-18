@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Divider, IconButton, ListSubheader } from '@mui/material';
@@ -14,7 +15,6 @@ import Logo from 'components/common/Logo';
 import { useNavContext } from '../NavProvider';
 import NavItem from './NavItem';
 import SidenavSimpleBar from './SidenavSimpleBar';
-import { useSession } from 'next-auth/react';
 
 interface SidenavDrawerContentProps {
   variant?: 'permanent' | 'temporary';
@@ -59,8 +59,8 @@ const SidenavDrawerContent = ({ variant = 'permanent' }: SidenavDrawerContentPro
               alignItems: 'center',
             },
             expanded && {
-              pl: { xs: 4, md: 6 },
-              pr: { xs: 2, md: 3 },
+              pl: { xs: 4, md: 4 },
+              pr: { xs: 2, md: 0 },
             },
           ]}
         >
@@ -89,53 +89,55 @@ const SidenavDrawerContent = ({ variant = 'permanent' }: SidenavDrawerContentPro
               },
             ]}
           >
-            {sitemap.map((menu, index) => (
-              ((menu.access == "both") || ( user?.designation?.toLowerCase() == menu.access)) &&
-              <Box key={menu.id}>
-                {menu.subheader === 'Docs' && !sidenavCollapsed && (
-                  <>
-                    <Divider sx={{ mb: 4 }} />
-                    <DocSearch />
-                  </>
-                )}
-                <List
-                  dense
-                  key={menu.id}
-                  sx={{
-                    mb: index !== sitemap.length - 1 ? 3 : 0,
-                    pb: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px',
-                  }}
-                  subheader={
-                    menu.subheader && (
-                      <ListSubheader
-                        component="div"
-                        disableGutters
-                        sx={{
-                          textAlign: expanded ? 'left' : 'center',
-                          color: 'text.disabled',
-                          typography: 'overline',
-                          fontWeight: 700,
-                          py: 1,
-                          paddingLeft: expanded ? 2 : 0,
-                          mb: 0.25,
-                          position: 'static',
-                          background: 'transparent',
-                        }}
-                      >
-                        {t(menu.key || menu.subheader)}
-                      </ListSubheader>
-                    )
-                  }
-                >
-                  {menu.items.map((item) => (
-                    <NavItem key={item.pathName} item={item} level={0} />
-                  ))}
-                </List>
-              </Box>
-            ))}
+            {sitemap.map(
+              (menu, index) =>
+                (menu.access == 'both' || user?.designation?.toLowerCase() == menu.access) && (
+                  <Box key={menu.id}>
+                    {menu.subheader === 'Docs' && !sidenavCollapsed && (
+                      <>
+                        <Divider sx={{ mb: 4 }} />
+                        <DocSearch />
+                      </>
+                    )}
+                    <List
+                      dense
+                      key={menu.id}
+                      sx={{
+                        mb: index !== sitemap.length - 1 ? 3 : 0,
+                        pb: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                      }}
+                      subheader={
+                        menu.subheader && (
+                          <ListSubheader
+                            component="div"
+                            disableGutters
+                            sx={{
+                              textAlign: expanded ? 'left' : 'center',
+                              color: 'text.disabled',
+                              typography: 'overline',
+                              fontWeight: 700,
+                              py: 1,
+                              paddingLeft: expanded ? 2 : 0,
+                              mb: 0.25,
+                              position: 'static',
+                              background: 'transparent',
+                            }}
+                          >
+                            {t(menu.key || menu.subheader)}
+                          </ListSubheader>
+                        )
+                      }
+                    >
+                      {menu.items.map((item) => (
+                        <NavItem key={item.pathName} item={item} level={0} />
+                      ))}
+                    </List>
+                  </Box>
+                ),
+            )}
           </Box>{' '}
         </SidenavSimpleBar>
       </Box>
