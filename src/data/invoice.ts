@@ -10,22 +10,22 @@ import { users } from './users';
 const logo = (index: number) => `${initialConfig.assetsDir}/images/logo/${index}.svg`;
 
 export const invoiceListTableRowData: any[] = [
-  {
-    id: '12243',
-    client: {
-      name: 'Amit Sharma',
-      avatar: users[0].avatar,
-      email: 'patient@gmail.com',
-    },
-    issueDate: {
-      date: '2026-01-05',
-      time: '10:30 AM',
-    },
-    status: 'paid',
-    paymentDate: '2026-01-15',
-    requiredAmount: 4500,
-    paidAmount: 4500,
-  },
+  // {
+  //   id: '12243',
+  //   client: {
+  //     name: 'Amit Sharma',
+  //     avatar: users[0].avatar,
+  //     email: 'patient@gmail.com',
+  //   },
+  //   issueDate: {
+  //     date: '2026-01-05',
+  //     time: '10:30 AM',
+  //   },
+  //   status: 'paid',
+  //   paymentDate: '2026-01-15',
+  //   requiredAmount: 4500,
+  //   paidAmount: 4500,
+  // },
   {
     id: '24361',
     client: {
@@ -34,13 +34,13 @@ export const invoiceListTableRowData: any[] = [
       email: 'priya.verma@gmail.com',
     },
     issueDate: {
-      date: '2025-12-30',
+      date: '2026-01-10',
       time: '02:15 PM',
     },
-    status: 'pending',
-    paymentDate: '2026-02-01',
+    status: 'paid',
+    paymentDate: '2026-01-10',
     requiredAmount: 5500,
-    paidAmount: 0,
+    paidAmount: 5500,
   },
   {
     id: '14583',
@@ -50,13 +50,13 @@ export const invoiceListTableRowData: any[] = [
       email: 'rahul.mehta@gmail.com',
     },
     issueDate: {
-      date: '2025-10-25',
+      date: '2026-01-05',
       time: '11:00 AM',
     },
-    status: 'late',
-    paymentDate: '2025-12-01',
+    status: 'paid',
+    paymentDate: '2026-01-06',
     requiredAmount: 2000,
-    paidAmount: 0,
+    paidAmount: 2000,
   },
   {
     id: '12354',
@@ -86,7 +86,7 @@ export const invoiceListTableRowData: any[] = [
       time: '05:20 PM',
     },
     status: 'paid',
-    paymentDate: '2026-01-15',
+    paymentDate: '2026-01-02',
     requiredAmount: 6000,
     paidAmount: 6000,
   },
@@ -147,19 +147,21 @@ export const invoiceData: InvoicePreviewItem = {
     phone: '+91 98765 43210',
     email: 'doctor@gmail.com',
     address: 'Bangalore, India',
-    issueDate: '2026-01-16',
+    issueDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+  .toISOString()
+  .split('T')[0]
   },
   invoiceTo: {
     name: 'Amit Sharma',
     phone: '6360318731',
     email: 'patient@gmail.com',
     address: 'India',
-    issueDate: '2026-01-30',
+    // issueDate: new Date().toISOString().split('T')[0],
   },
   invoiceDetails: {
     invoiceNumber: 45001,
-    status: 'Pending',
-    amount: 4500,
+    status: 'Paid',
+    amount: 2500,
   },
   shippingCost: 0,
   discount: 0,
@@ -172,13 +174,13 @@ export const invoiceData: InvoicePreviewItem = {
       quantity: 1,
       price: 1500,
     },
-    {
-      id: 2,
-      type: 'test',
-      description: 'Blood Test',
-      quantity: 1,
-      price: 2000,
-    },
+    // {
+    //   id: 2,
+    //   type: 'test',
+    //   description: 'Blood Test',
+    //   quantity: 1,
+    //   price: 2000,
+    // },
     {
       id: 3,
       type: 'medicine',

@@ -26,7 +26,7 @@ const VisitorRevenue = () => {
         />
 
         <EcomStatSection
-          amount={70.02}
+          amount={7000}
           increment={-1.03}
           chart={
             <VisitorRevenueChart

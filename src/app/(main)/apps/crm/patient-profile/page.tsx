@@ -3,28 +3,19 @@
 import { useEffect, useState } from 'react';
 import { Paper } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import { users } from 'data/users';
 import paths from 'routes/paths';
 import AddContactStepper from 'components/sections/crm/add-contact/AddContactStepper';
 import PageHeader from 'components/sections/ecommerce/admin/common/PageHeader';
 
 const AddContact = () => {
-  const [data, setData] = useState({});
-  const [title, setTitle] = useState('Add New Patient');
-  useEffect(() => {
-    const storedData = localStorage.getItem('editContact');
-    setData(storedData ? JSON.parse(storedData) : null);
-    if (storedData) {
-      setTitle('Edit Patient Details');
-    }
-  }, []);
   return (
     <Grid container>
       <Grid size={12}>
         <PageHeader
-          title={title}
+          title="Patient Details"
           breadcrumb={[
-            { label: data ? 'Patient Details' : 'Home', url: data ? paths.leadDetails : paths.crm },
-            { label: data ? 'Edit Patient' : 'New Patient', active: true },
+            // { label: 'Patient', active: true },
           ]}
           // actionComponent={
           //   <Stack gap={1}>
@@ -44,7 +35,7 @@ const AddContact = () => {
       </Grid>
       <Grid size={12}>
         <Paper sx={{ p: { xs: 3, md: 5 } }}>
-          <AddContactStepper removeSave={false} />
+          <AddContactStepper removeSave={true} />
         </Paper>
       </Grid>
     </Grid>

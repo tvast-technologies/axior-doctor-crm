@@ -32,13 +32,14 @@ import dayjs from 'dayjs';
 import { useBreakpoints } from 'providers/BreakpointsProvider';
 // import IconifyIcon from 'components/base/IconifyIcon';
 import PageHeader from 'components/sections/ecommerce/admin/common/PageHeader';
+
 // import StyledTextField from 'components/styled/StyledTextField';
 
 type ActionType = 'whatsapp' | 'email' | 'prescription';
 
 const patients = [
   {
-    id: 'pat001',
+    id: 'PAT001',
     personalInfo: {
       firstName: 'Amit',
       lastName: 'Sharma',
@@ -50,10 +51,10 @@ const patients = [
     paymentDate: '2026-01-15',
     age: '22',
     lastInvoiceAmount: '₹ 4,500',
-    status: 'paid',
+    status: 'online',
   },
   {
-    id: 'pat002',
+    id: 'PAT002',
     personalInfo: {
       firstName: 'Priya',
       lastName: 'Verma',
@@ -65,10 +66,10 @@ const patients = [
     paymentDate: '2026-02-01',
     age: '24',
     lastInvoiceAmount: '₹ 5,500',
-    status: 'upcoming',
+    status: 'walkIn',
   },
   {
-    id: 'pat003',
+    id: 'PAT003',
     personalInfo: {
       firstName: 'Rahul',
       lastName: 'Mehta',
@@ -80,10 +81,10 @@ const patients = [
     paymentDate: '2026-02-10',
     age: '20',
     lastInvoiceAmount: '₹ 2,000',
-    status: 'Upcoming',
+    status: 'walkIn',
   },
   {
-    id: 'pat004',
+    id: 'PAT004',
     personalInfo: {
       firstName: 'Sneha',
       lastName: 'Iyer',
@@ -95,10 +96,10 @@ const patients = [
     paymentDate: '2025-08-19',
     age: '40',
     lastInvoiceAmount: '₹ 9,500',
-    status: 'paid',
+    status: 'online',
   },
   {
-    id: 'pat005',
+    id: 'PAT005',
     personalInfo: {
       firstName: 'Rohit',
       lastName: 'Singh',
@@ -110,11 +111,11 @@ const patients = [
     paymentDate: '2026-01-15',
     age: '35',
     lastInvoiceAmount: '₹ 6,000',
-    status: 'paid',
+    status: 'online',
   },
 ];
 
-type TabValue = 'all' | 'paid' | 'late' | 'sent' | 'draft';
+type TabValue = 'all' | 'online' | 'walkIn';
 
 const PatientsBoard = () => {
   const [open, setOpen] = useState(false);
@@ -158,10 +159,10 @@ const PatientsBoard = () => {
 
   const getPaymentStatusBadgeColor = (val: string): ChipOwnProps['color'] => {
     switch (val) {
-      case 'sent':
-        return 'success';
-      case 'paid':
+      case 'online':
         return 'info';
+      case 'walkIn':
+        return 'success';
       case 'late':
         return 'error';
       default:
@@ -272,25 +273,25 @@ const PatientsBoard = () => {
         headerName: 'Status',
         filterable: true,
         // valueGetter: ({ status }) => status,
-        minWidth: 200,
-        flex: 1,
+        minWidth: 100,
+        // flex: 1,
         renderCell: (params) => {
           return (
             <Stack sx={{ alignItems: 'center', gap: 1 }}>
               <Chip
-                label={params.row.status}
+                label={params.row.status == 'online' ? 'Online' : 'Walk-In'}
                 variant="soft"
                 color={getPaymentStatusBadgeColor(params.row.status)}
                 sx={{ textTransform: 'capitalize' }}
               />
-              <Typography
+              {/* <Typography
                 variant="body2"
                 color={params.row.status === 'late' ? 'error' : undefined}
                 sx={{ fontWeight: 400 }}
               >
                 {params.row.status === 'paid' ? 'Paid' : 'Coming'} on{' '}
                 {dayjs(params.row.paymentDate).format('MMM DD, YYYY')}
-              </Typography>
+              </Typography> */}
             </Stack>
           );
         },
@@ -306,7 +307,7 @@ const PatientsBoard = () => {
         sortable: false,
         flex: 1,
         filterable: false,
-        minWidth: 260,
+        minWidth: 300,
         renderCell: (params: { row: any }) => (
           <Stack direction="row" spacing={1}>
             <Button size="small" variant="soft" onClick={() => handleOpen(params.row, 'whatsapp')}>
@@ -367,8 +368,8 @@ const PatientsBoard = () => {
               >
                 <TabList onChange={handleChange} aria-label="invoice list tab">
                   <Tab label="All" value="all" />
-                  <Tab label="Paid" value="paid" />
-                  <Tab label="Late" value="late" />
+                  <Tab label="Online" value="online" />
+                  <Tab label="Walk-In" value="walkIn" />
                   {/* <Tab label="Sent" value="sent" />
                 <Tab label="Draft" value="draft" /> */}
                 </TabList>
@@ -413,7 +414,7 @@ const PatientsBoard = () => {
             />
           </Stack> */}
           </Stack>
-          {['all', 'paid', 'late', 'sent', 'draft'].map((item) => (
+          {['all', 'online', 'walkIn'].map((item) => (
             <TabPanel
               key={item}
               value={item}

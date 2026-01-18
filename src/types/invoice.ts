@@ -33,7 +33,7 @@ export interface InvoicePreviewItem {
     phone: string;
     email: string;
     address: string;
-    issueDate: string;
+    issueDate?: string;
   };
   invoiceDetails: {
     invoiceNumber: number;

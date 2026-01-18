@@ -19,7 +19,7 @@ const InvoiceImageDropzone = () => {
     formState: { errors },
   } = useFormContext<CreateInvoiceFormSchemaValues>();
 
-  const organizationImage = watch('organizationImage');
+  // const organizationImage = watch('organizationImage');
   const [preview, setPreview] = useState<FileAttachment | null>(null);
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -27,18 +27,18 @@ const InvoiceImageDropzone = () => {
     multiple: false,
     onDrop: (acceptedFiles) => {
       const newFile = acceptedFiles[0];
-      setValue('organizationImage', {
-        id: newFile.name,
-        file: newFile,
-      });
+      // setValue('organizationImage', {
+      //   id: newFile.name,
+      //   file: newFile,
+      // });
       setPreview(convertFileToAttachment(newFile));
-      clearErrors('organizationImage');
+      // clearErrors('organizationImage');
     },
   });
 
   const handleRemove = () => {
-    setValue('organizationImage', null);
-    trigger('organizationImage');
+    // setValue('organizationImage', null);
+    // trigger('organizationImage');
     setPreview(null);
   };
 
@@ -47,12 +47,12 @@ const InvoiceImageDropzone = () => {
       <Box
         {...getRootProps()}
         sx={{
-          bgcolor: errors.organizationImage ? 'error.lighter' : 'background.elevation2',
+          // bgcolor: errors.organizationImage ? 'error.lighter' : 'background.elevation2',
           height: 78,
           borderRadius: 2,
           minWidth: 320,
           borderWidth: 1,
-          borderColor: errors.organizationImage ? 'error.main' : 'divider',
+          // borderColor: errors.organizationImage ? 'error.main' : 'divider',
           borderStyle: 'dashed',
           cursor: 'pointer',
           display: 'flex',
@@ -70,7 +70,7 @@ const InvoiceImageDropzone = () => {
           },
         }}
       >
-        <input {...getInputProps()} />
+        {/* <input {...getInputProps()} />
         {preview || organizationImage ? (
           <Box sx={{ position: 'relative', width: 1, height: 1, p: 1 }}>
             <Image
@@ -148,13 +148,13 @@ const InvoiceImageDropzone = () => {
               </Box>
             </Typography>
           </Stack>
-        )}
+        )} */}
       </Box>
-      {errors.organizationImage && (
+      {/* {errors.organizationImage && (
         <FormHelperText error sx={{ mx: '14px' }}>
           {errors.organizationImage.message}
         </FormHelperText>
-      )}
+      )} */}
     </Stack>
   );
 };

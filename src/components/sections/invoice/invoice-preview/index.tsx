@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button, Paper, Stack } from '@mui/material';
 import { invoiceData } from 'data/invoice';
 import paths from 'routes/paths';
@@ -13,6 +13,8 @@ const InvoicePreview = () => {
   const params = useParams();
   const id = params?.id as string;
 
+  const router = useRouter();
+
   return (
     <>
       <Stack direction="column">
@@ -20,13 +22,13 @@ const InvoicePreview = () => {
           title={`Invoice #${id || invoiceData.invoiceDetails.invoiceNumber}`}
           breadcrumb={[
             { label: 'Home', url: '/' },
-            { label: 'Invoice', url: paths.createInvoice },
+            { label: 'Invoice', url: paths.invoiceList },
             { label: 'Invoice preview', active: true },
           ]}
           actionComponent={
             <Stack sx={{ flexWrap: 'wrap', gap: { xs: 0.5, sm: 1 } }}>
-              <Button variant="contained" color="primary">
-                Send invoice
+              <Button variant="contained" color="primary" onClick={() => router.push(paths.invoiceList)}>
+                Invoice List
               </Button>
               <Button variant="soft" shape="square" color="neutral">
                 <IconifyIcon icon="mdi:edit-outline" sx={{ fontSize: 20 }} />

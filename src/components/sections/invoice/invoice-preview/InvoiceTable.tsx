@@ -48,13 +48,14 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
       <Stack
         sx={{ justifyContent: 'space-between', alignItems: { md: 'flex-end' }, gap: 2, mb: 4 }}
       >
-        <Image
+        <Stack/>
+        {/* <Image
           src={invoice.organizationImage?.file}
           alt="logo"
           sx={{ objectFit: 'contain' }}
           width={144}
           height={72}
-        />
+        /> */}
 
         <Box sx={{ textAlign: 'end' }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
@@ -81,7 +82,7 @@ const InvoiceTable = ({ invoice }: InvoiceTableProps) => {
         <Grid container spacing={{ xs: 3, md: 5, lg: 8 }}>
           <Grid size={{ xs: 6 }}>
             <RecipientCard
-              title="Invoice form"
+              title="Invoice From"
               data={invoice.invoiceFrom}
               editButton={false}
               sxProps={{ color: 'text.secondary' }}

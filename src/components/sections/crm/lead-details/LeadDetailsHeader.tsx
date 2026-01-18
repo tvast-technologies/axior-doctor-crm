@@ -29,7 +29,7 @@ const LeadDetailsHeader = () => {
       firstName: 'Amit',
       lastName: 'Sharma',
       personalEmail: 'patient1@test.com',
-      phoneNumber: '1234567855',
+      phoneNumber: '6360318731',
       profileImage: users[0].avatar,
       age: "22"
     },

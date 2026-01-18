@@ -5,6 +5,7 @@ import { PropsWithChildren, Suspense, useMemo } from 'react';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { Link, Stack, Tab, Tabs, tabsClasses } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import doctor from 'assets/json/Doctor.json';
 import authDark from 'assets/json/auth-dark.json';
 import auth from 'assets/json/auth.json';
 import { useThemeMode } from 'hooks/useThemeMode';
@@ -74,7 +75,13 @@ const DefaultAuthLayout = ({ children }: PropsWithChildren) => {
               transform: (theme) => (theme.direction === 'rtl' ? 'scaleX(-1)' : 'unset'),
             }}
           >
-            {isDark ? <Lottie animationData={authDark} /> : <Lottie animationData={auth} />}
+            <Stack maxWidth={'35vw'}>
+              {isDark ? (
+                <Lottie animationData={authDark} />
+              ) : (
+                <Lottie animationData={doctor} width={30} />
+              )}
+            </Stack>
           </Stack>
 
           <Stack

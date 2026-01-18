@@ -23,6 +23,23 @@ export interface Order {
   status: 'primary' | 'warning' | 'success';
 }
 
+export const statsToday: Stat[] = [
+  {
+    icon: 'material-symbols-light:ads-click-rounded',
+    value: 'Upto 60',
+    subtitle: 'Complete bookings',
+  },
+  {
+    icon: 'material-symbols-light:request-quote-outline-rounded',
+    value: 'Upto ₹110K',
+    subtitle: 'Earnings',
+  },
+  {
+    icon: 'material-symbols-light:shopping-cart-checkout-rounded',
+    value: 'Upto 100+',
+    subtitle: 'Total bookings',
+  },
+];
 export const stats: Stat[] = [
   {
     icon: 'material-symbols-light:ads-click-rounded',
@@ -31,13 +48,13 @@ export const stats: Stat[] = [
   },
   {
     icon: 'material-symbols-light:request-quote-outline-rounded',
-    value: '₹100M',
+    value: '₹100K',
     subtitle: 'Earnings',
   },
   {
     icon: 'material-symbols-light:shopping-cart-checkout-rounded',
     value: '100',
-    subtitle: 'Totak bookings',
+    subtitle: 'Total bookings',
   },
 ];
 
@@ -63,7 +80,6 @@ export const meetingSchedules: MeetingSchedule[] = [
     attendants: [users[1], users[2], users[7], users[12], users[13]],
   },
 ];
-
 
 export interface AppointmentSummary {
   id: number;
@@ -159,7 +175,6 @@ export const appointmentSummaries: AppointmentSummary[] = [
     status: 'Pending',
   },
 ];
-
 
 export const orders: Order[] = [
   {
@@ -262,7 +277,6 @@ export const orders: Order[] = [
   },
 ];
 
-
 export interface Appointment {
   id: number;
   patientImage: string;
@@ -270,6 +284,7 @@ export interface Appointment {
   fee: string;
   statusIcon: string;
   status: 'primary' | 'success' | 'warning' | 'error';
+  type: 'walkin' | 'online';
 }
 
 export const appointments: Appointment[] = [
@@ -280,6 +295,7 @@ export const appointments: Appointment[] = [
     fee: `INR${appointmentSummaries[9].fee}`,
     statusIcon: 'material-symbols:event-available',
     status: 'success',
+    type: 'walkin',
   },
   {
     id: 2,
@@ -287,7 +303,8 @@ export const appointments: Appointment[] = [
     patientName: appointmentSummaries[6].patient.name,
     fee: `INR${appointmentSummaries[6].fee}`,
     statusIcon: 'material-symbols:pending-actions',
-    status: 'warning',
+    status: 'success',
+    type: 'online',
   },
   {
     id: 3,
@@ -295,7 +312,8 @@ export const appointments: Appointment[] = [
     patientName: appointmentSummaries[2].patient.name,
     fee: `INR${appointmentSummaries[2].fee}`,
     statusIcon: 'material-symbols:pending-actions',
-    status: 'warning',
+    status: 'success',
+    type: 'walkin',
   },
   {
     id: 4,
@@ -304,6 +322,7 @@ export const appointments: Appointment[] = [
     fee: `INR${appointmentSummaries[3].fee}`,
     statusIcon: 'material-symbols:check-circle-outline',
     status: 'success',
+    type: 'online',
   },
   {
     id: 5,
@@ -312,6 +331,7 @@ export const appointments: Appointment[] = [
     fee: `INR${appointmentSummaries[4].fee}`,
     statusIcon: 'material-symbols:check-circle-outline',
     status: 'success',
+    type: 'walkin',
   },
   {
     id: 6,
@@ -319,7 +339,8 @@ export const appointments: Appointment[] = [
     patientName: appointmentSummaries[5].patient.name,
     fee: `INR${appointmentSummaries[5].fee}`,
     statusIcon: 'material-symbols:event-busy',
-    status: 'warning',
+    status: 'success',
+    type: 'online',
   },
   {
     id: 7,
@@ -328,6 +349,7 @@ export const appointments: Appointment[] = [
     fee: `INR${appointmentSummaries[1].fee}`,
     statusIcon: 'material-symbols:check-circle-outline',
     status: 'success',
+    type: 'walkin',
   },
   {
     id: 8,
@@ -336,6 +358,7 @@ export const appointments: Appointment[] = [
     fee: `INR${appointmentSummaries[7].fee}`,
     statusIcon: 'material-symbols:check-circle-outline',
     status: 'success',
+    type: 'online',
   },
   {
     id: 9,
@@ -343,7 +366,8 @@ export const appointments: Appointment[] = [
     patientName: appointmentSummaries[8].patient.name,
     fee: `INR${appointmentSummaries[8].fee}`,
     statusIcon: 'material-symbols:pending-actions',
-    status: 'warning',
+    status: 'success',
+    type: 'walkin',
   },
   {
     id: 10,
@@ -351,6 +375,7 @@ export const appointments: Appointment[] = [
     patientName: appointmentSummaries[0].patient.name,
     fee: `INR${appointmentSummaries[0].fee}`,
     statusIcon: 'material-symbols:event-available',
-    status: 'primary',
+    status: 'success',
+    type: 'walkin',
   },
 ];

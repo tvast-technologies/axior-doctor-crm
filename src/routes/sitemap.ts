@@ -53,10 +53,18 @@ const sitemap: MenuItem[] = [
     items: [
       {
         icon: 'material-symbols:person-outline',
-        name: 'Patient details',
-        key: 'Patient details',
+        name: 'Patient Details',
+        key: 'Patient Details',
+        path: paths.patientProfile,
+        pathName: 'patient-profile',
+        active: true,
+      },
+      {
+        icon: 'material-symbols:history',
+        name: 'Patient History',
+        key: 'Patient History',
         path: paths.leadDetails,
-        pathName: 'lead-details',
+        pathName: 'history',
         active: true,
       },
       {
@@ -76,35 +84,37 @@ const sitemap: MenuItem[] = [
     access: 'doctor',
     icon: 'material-symbols:widgets-outline-rounded',
     items: [
+      // {
+      //   name: 'Patient',
+      //   pathName: 'patient',
+      //   key: 'Patient',
+      //   icon: 'material-symbols:person-outline',
+      //   active: true,
+      //   items: [
+      //     // {
+      //     //   name: 'Booking status',
+      //     //   key: 'Booking status',
+      //     //   path: paths.booking_status,
+      //     //   pathName: 'deals',
+      //     //   active: true,
+      //     // },
+      //   ],
+      // },
       {
-        name: 'Patient',
-        pathName: 'patient',
-        key: 'Patient',
-        icon: 'material-symbols:person-outline',
+        name: 'Patients List',
+        key: 'Patients List',
+        path: paths.patients_list,
+        pathName: 'patients-list',
+        icon: 'material-symbols:group-outline',
         active: true,
-        items: [
-          // {
-          //   name: 'Booking status',
-          //   key: 'Booking status',
-          //   path: paths.booking_status,
-          //   pathName: 'deals',
-          //   active: true,
-          // },
-          {
-            name: 'Patients List',
-            key: 'Patients List',
-            path: paths.patients_list,
-            pathName: 'patients-list',
-            active: true,
-          },
-          {
-            name: 'Add Patient',
-            key: 'Add Patient',
-            path: paths.addContact,
-            pathName: 'add-contact',
-            active: true,
-          },
-        ],
+      },
+      {
+        name: 'Add Patient',
+        key: 'Add Patient',
+        path: paths.addContact,
+        pathName: 'add-contact',
+        icon: 'material-symbols:person-add-outline',
+        active: true,
       },
       {
         name: 'Appointments',

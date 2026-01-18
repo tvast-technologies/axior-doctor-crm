@@ -109,6 +109,7 @@ const paths = {
   leadDetails: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/lead-details`,
   dealDetails: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/deal-details`,
   addContact: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/add-contact`,
+  patientProfile: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/patient-profile`,
   deals: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/deals`,
   patients_list: `/${rootPaths.appsRoot}/${rootPaths.crmRoot}/patients-list`,
 

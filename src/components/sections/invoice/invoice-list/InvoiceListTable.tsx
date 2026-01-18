@@ -67,6 +67,7 @@ const InvoiceListTable = ({
               variant="body2"
               sx={{ fontWeight: 400 }}
               // href={paths.invoicePreviewWithId(id.toString())}
+              href={paths.invoicePreview}
             >
               #{id}
             </Link>
@@ -106,6 +107,13 @@ const InvoiceListTable = ({
       {
         field: 'issueDate',
         headerName: 'Issue Date',
+        sortable: true,
+        sortComparator: (v1, v2) => {
+          // Convert to timestamps for correct chronological sorting
+          const time1 = v1 ? new Date(v1).getTime() : 0;
+          const time2 = v2 ? new Date(v2).getTime() : 0;
+          return time1 - time2;
+        },
         valueGetter: ({ date }) => date,
         filterable: true,
         minWidth: 150,
@@ -115,9 +123,9 @@ const InvoiceListTable = ({
               <Typography variant="subtitle2" sx={{ fontWeight: 400 }}>
                 {dayjs(params.row.issueDate.date).format('MMM DD, YYYY')}
               </Typography>
-              <Typography variant="caption" sx={{ fontWeight: 500 }}>
+              {/* <Typography variant="caption" sx={{ fontWeight: 500 }}>
                 {params.row.issueDate.time}
-              </Typography>
+              </Typography> */}
             </Box>
           );
         },
@@ -231,6 +239,14 @@ const InvoiceListTable = ({
             paginationModel: {
               pageSize: defaultPageSize,
             },
+          },
+          sorting: {
+            sortModel: [
+              {
+                field: 'issueDate',
+                sort: 'asc', // latest first
+              },
+            ],
           },
         }}
         checkboxSelection

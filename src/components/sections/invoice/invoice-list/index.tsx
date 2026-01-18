@@ -1,9 +1,13 @@
+"use client"
+
 import { Button, Paper, Stack } from '@mui/material';
 import paths from 'routes/paths';
 import PageHeader from 'components/sections/ecommerce/admin/common/PageHeader';
 import InvoiceListContainer from './InvoiceListContainer';
+import { useRouter } from 'next/navigation';
 
 const InvoiceLists = () => {
+  const router = useRouter();
   return (
     <Stack direction="column" height={1}>
       <PageHeader
@@ -21,7 +25,7 @@ const InvoiceLists = () => {
             <Button variant="soft" color="neutral">
               Import
             </Button>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={() =>router.replace(paths.createInvoice)}>
               Create Invoice
             </Button>
           </Stack>

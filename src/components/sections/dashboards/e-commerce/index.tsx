@@ -96,11 +96,11 @@ const ECommerce = () => {
     return (
       <div suppressHydrationWarning>
         <Grid container>
-          <Grid size={{ xs: 12, md: 5, lg: 4, xl: 3 }} sx={{ height: 1 }}>
+          <Grid size={{ xs: 12, md: 5, lg: 5, xl: 4 }} sx={{ height: 1 }}>
             <Greeting appointments={appointments} stats={stats} />
           </Grid>
 
-          <Grid container size={{ xs: 12, md: 7, lg: 8, xl: 9 }}>
+          <Grid container size={{ xs: 12, md: 7, lg: 7, xl: 8 }}>
             <Grid container size={{ xs: 12 }}>
               <Grid size={{ xs: 12, sm: 6, md: 12, lg: 6, xl: 12 }}>
                 <MonthlyProfit />

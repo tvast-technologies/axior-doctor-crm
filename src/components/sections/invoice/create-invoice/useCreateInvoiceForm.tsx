@@ -13,7 +13,7 @@ export const saveToStorage = (data: CreateInvoiceFormSchemaValues) => {
 /* -------------------------------------------------------------------------- */
 
 export interface CreateInvoiceFormSchemaValues {
-  organizationImage: { id: string; file: any } | null;
+  // organizationImage: { id: string; file: any } | null;
 
   invoiceFrom: {
     name: string; // Doctor / Clinic
@@ -59,18 +59,14 @@ export interface CreateInvoiceFormSchemaValues {
   note?: string;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               VALIDATION                                   */
-/* -------------------------------------------------------------------------- */
-
 export const CreateInvoiceFormSchema: yup.ObjectSchema<CreateInvoiceFormSchemaValues> = yup.object({
-  organizationImage: yup
-    .object({
-      id: yup.string().required(),
-      file: yup.mixed().required(),
-    })
-    .nullable()
-    .required('Clinic logo is required'),
+  // organizationImage: yup
+  //   .object({
+  //     id: yup.string().required(),
+  //     file: yup.mixed().required(),
+  //   })
+  //   .nullable()
+  //   .required('Clinic logo is required'),
 
   invoiceFrom: yup.object({
     name: yup.string().required('Clinic name is required'),
@@ -162,15 +158,11 @@ export const CreateInvoiceFormSchema: yup.ObjectSchema<CreateInvoiceFormSchemaVa
   note: yup.string(),
 });
 
-/* -------------------------------------------------------------------------- */
-/*                              FORM HOOK                                     */
-/* -------------------------------------------------------------------------- */
-
 export const useCreateInvoiceForm = () => {
   const methods = useForm<CreateInvoiceFormSchemaValues>({
     resolver: yupResolver(CreateInvoiceFormSchema),
     defaultValues: {
-      organizationImage: null,
+      // organizationImage: null,
 
       // Hardcoded Doctor / Clinic
       invoiceFrom: {
@@ -181,20 +173,20 @@ export const useCreateInvoiceForm = () => {
       },
 
       invoiceTo: {
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
+        name: 'Amit Sharma',
+        phone: '+91 63603 18731',
+        email: 'patient@gmail.com',
+        address: 'Bangalore, India',
       },
 
       invoiceDetails: {
         invoiceNumber: 45001,
-        status: 'pending',
+        status: 'paid',
       },
 
       deadline: {
         issueDate: new Date(),
-        dueDate: null,
+        dueDate: new Date(),
       },
 
       orderCharges: {
@@ -214,12 +206,12 @@ export const useCreateInvoiceForm = () => {
           quantity: 1,
           price: 1500,
         },
-        {
-          type: 'test',
-          description: 'Blood Test',
-          quantity: 1,
-          price: 2000,
-        },
+        // {
+        //   type: 'test',
+        //   description: 'Blood Test',
+        //   quantity: 1,
+        //   price: 2000,
+        // },
         {
           type: 'medicine',
           description: 'Medication Charges',

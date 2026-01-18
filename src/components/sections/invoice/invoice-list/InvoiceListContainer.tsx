@@ -35,7 +35,10 @@ const getInvoiceRowFromLocalStorage = () => {
       0,
     ),
 
-    paidAmount: 0,
+    paidAmount: data.itemDetails?.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0,
+    ),
 
     status: data.invoiceDetails?.status || 'paid',
 
@@ -94,8 +97,6 @@ const InvoiceListContainer = () => {
     apiRef.current?.showFilterPanel();
   };
 
-  /* ------------------------------ RENDER ----------------------------------- */
-
   return (
     <TabContext value={value}>
       <Stack
@@ -110,8 +111,8 @@ const InvoiceListContainer = () => {
         <Box sx={{ order: { xs: 1, sm: 0 } }}>
           <TabList onChange={handleChange} aria-label="invoice list tab">
             <Tab label="All Invoice" value="all" />
-            <Tab label="Paid" value="paid" />
-            <Tab label="Late" value="late" />
+            {/* <Tab label="Paid" value="paid" />
+            <Tab label="Pending" value="late" /> */}
           </TabList>
         </Box>
 

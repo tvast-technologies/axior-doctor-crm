@@ -22,12 +22,14 @@ const InvoiceDetailsForm = () => {
     formState: { errors },
   } = useFormContext<CreateInvoiceFormSchemaValues>();
 
+  console.log(errors)
+
   return (
     <Grid container spacing={3} sx={{ width: 1, mb: 5, mt: 4 }}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <InvoiceDetailsFormSections title="Invoice details">
+        <InvoiceDetailsFormSections title="Invoice ID">
           <Grid container spacing={1} sx={{ width: 1 }}>
-            <Grid size={6}>
+            <Grid size={12}>
               <StyledTextField
                 type="number"
                 placeholder="Invoice number"
@@ -49,7 +51,7 @@ const InvoiceDetailsForm = () => {
                 }}
               />
             </Grid>
-            <Grid size={6}>
+            {/* <Grid size={6}>
               <Controller
                 name="invoiceDetails.status"
                 control={control}
@@ -64,8 +66,8 @@ const InvoiceDetailsForm = () => {
                       error={!!errors.invoiceDetails?.status}
                       fullWidth
                     >
-                      {/* <MenuItem value="draft">Draft</MenuItem> */}
-                      {/* <MenuItem value="sent">Sent</MenuItem> */}
+                      <MenuItem value="draft">Draft</MenuItem>
+                      <MenuItem value="sent">Sent</MenuItem>
                       <MenuItem value="pending">Pending</MenuItem>
                       <MenuItem value="paid">Paid</MenuItem>
                       <MenuItem value="late">Late</MenuItem>
@@ -78,15 +80,15 @@ const InvoiceDetailsForm = () => {
                   {errors.invoiceDetails.status.message}
                 </FormHelperText>
               )}
-            </Grid>
+            </Grid> */}
           </Grid>
         </InvoiceDetailsFormSections>
       </Grid>
 
       <Grid size={{ xs: 12, md: 6 }}>
-        <InvoiceDetailsFormSections title="Deadline">
+        <InvoiceDetailsFormSections title="Date">
           <Grid container spacing={1} sx={{ width: 1 }}>
-            <Grid size={6}>
+            <Grid size={12}>
               <Controller
                 name="deadline.issueDate"
                 control={control}
@@ -111,7 +113,7 @@ const InvoiceDetailsForm = () => {
                 )}
               />
             </Grid>
-            <Grid size={6}>
+            {/* <Grid size={6}>
               <Controller
                 name="deadline.dueDate"
                 control={control}
@@ -135,7 +137,7 @@ const InvoiceDetailsForm = () => {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
         </InvoiceDetailsFormSections>
       </Grid>

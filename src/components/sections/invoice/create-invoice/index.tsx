@@ -28,7 +28,7 @@ const CreateInvoice = () => {
           <PageBreadcrumb
             items={[
               { label: 'Home', url: '/' },
-              { label: 'Invoice', url: paths.createInvoice },
+              { label: 'Invoice', url: paths.invoiceList },
               { label: 'New Invoice', active: true },
             ]}
             sx={{

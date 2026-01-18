@@ -21,6 +21,7 @@ import {
   Checkbox,
   FormControl,
   InputLabel,
+  Link,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { DateCalendar, PickersDay } from '@mui/x-date-pickers';
@@ -46,7 +47,6 @@ type Booking = {
 
 const STORAGE_KEY = 'bookings';
 
-/* ---------- TIME SLOTS ---------- */
 const generateTimeSlots = (start = '09:00', end = '17:00', interval = 30) => {
   const slots: { start: string; end: string }[] = [];
 
@@ -65,7 +65,6 @@ const generateTimeSlots = (start = '09:00', end = '17:00', interval = 30) => {
   return slots;
 };
 
-/* ---------- RANDOM BLOCKED SLOTS ---------- */
 const getRandomBlockedSlots = (slots: { start: string; end: string }[]) => {
   const blocked: string[] = [];
   slots.forEach((s) => {
@@ -121,38 +120,16 @@ const BookingPage = () => {
     return false;
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setBookings(JSON.parse(stored));
-    } else {
-      const demo: Booking[] = [
-        {
-          id: '1',
-          date: dayjs().format('YYYY-MM-DD'),
-          start: '10:00',
-          end: '10:30',
-          name: 'John Doe',
-          email: 'john@example.com',
-          phone: '9999999999',
-          title: 'Demo Meeting',
-          paid: true,
-        },
-        {
-          id: '2',
-          date: dayjs().format('YYYY-MM-DD'),
-          start: '14:00',
-          end: '14:30',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          phone: '8888888888',
-          title: 'Consultation',
-          paid: true,
-        },
-      ];
-      setBookings(demo);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+  const getNextAvailableDate = () => {
+    let d = dayjs().startOf('day');
+    while (isDateDisabled(d)) {
+      d = d.add(1, 'day');
     }
+    return d;
+  };
+
+  useEffect(() => {
+    setSelectedDate(getNextAvailableDate());
   }, []);
 
   useEffect(() => {
@@ -163,11 +140,13 @@ const BookingPage = () => {
     bookings.some((b) => b.date === dateKey && b.start === start) || blockedSlots.includes(start);
 
   const resetForm = () => {
+    if (person != 'me') {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setAge('');
+    }
     setStep(1);
-    setName('');
-    setEmail('');
-    setPhone('');
-    setAge('');
     setTitle('');
     setSlot(null);
     setMode('Online');
@@ -219,7 +198,6 @@ const BookingPage = () => {
     }
   }, [person]);
 
-  /* ---------- UPDATE RANDOM BLOCKED SLOTS ON DATE CHANGE ---------- */
   useEffect(() => {
     if (!selectedDate) return;
     setSlot(null);
@@ -248,17 +226,20 @@ const BookingPage = () => {
 
           {/* Person Selector */}
           {selectedDate && (
-            <Box mt={3}>
-              <FormControl component="fieldset">
-                <RadioGroup
-                  value={person}
-                  onChange={(e) => setPerson(e.target.value as 'me' | 'other')}
-                >
-                  <FormControlLabel value="me" control={<Radio />} label="Me" />
-                  <FormControlLabel value="other" control={<Radio />} label="Other Person" />
-                </RadioGroup>
-              </FormControl>
-            </Box>
+            <>
+              <Typography variant="h6">Patient</Typography>
+              <Box mt={3}>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    value={person}
+                    onChange={(e) => setPerson(e.target.value as 'me' | 'other')}
+                  >
+                    <FormControlLabel value="me" control={<Radio />} label="Self" />
+                    <FormControlLabel value="other" control={<Radio />} label="Family Member" />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+            </>
           )}
         </Grid>
 
@@ -272,14 +253,28 @@ const BookingPage = () => {
               </Typography>
 
               <TextField
-                label="Your Name"
+                label={
+                  <Typography variant="body2">
+                    Your Name{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 fullWidth
               />
 
               <TextField
-                label="Email"
+                label={
+                  <Typography variant="body2">
+                    Email{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -287,14 +282,28 @@ const BookingPage = () => {
               />
 
               <NumberTextField
-                label="Phone Number"
+                label={
+                  <Typography variant="body2">
+                    Phone Number{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 fullWidth
               />
 
               <NumberTextField
-                label="Age"
+                label={
+                  <Typography variant="body2">
+                    Age{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
                 value={age}
                 onChange={(e) => setAge(Number(e.target.value))}
                 fullWidth
@@ -308,7 +317,7 @@ const BookingPage = () => {
               />
 
               {/* Mode of Visit */}
-              <FormControl component="fieldset">
+              {/* <FormControl component="fieldset">
                 <Typography fontWeight={500} mb={1}>
                   Mode of Visit
                 </Typography>
@@ -331,7 +340,7 @@ const BookingPage = () => {
                     <MenuItem value="Banashankari">Banashankari</MenuItem>
                   </Select>
                 </FormControl>
-              )}
+              )} */}
 
               {/* Session Type */}
               <FormControl component="fieldset">
@@ -351,7 +360,11 @@ const BookingPage = () => {
               {/* Terms */}
               <FormControlLabel
                 control={<Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
-                label="I agree to the terms and conditions"
+                label={
+                  <Typography variant="body2">
+                    I agree to the <Link href="#">terms and conditions</Link>
+                  </Typography>
+                }
               />
 
               {/* Time Slots with animation */}
@@ -394,9 +407,12 @@ const BookingPage = () => {
               <Button
                 size="large"
                 variant="contained"
-                disabled={!name || !title || !slot || !agree}
+                disabled={!name || !email || !phone || !age || !slot || !agree}
                 onClick={() => {
                   setStep(2);
+                  if (title === '') {
+                    setTitle('Checkup');
+                  }
                   setDialogOpen(true);
                 }}
               >
@@ -482,25 +498,29 @@ const BookingPage = () => {
                 </Stack>
               </Box>
 
-              <Button
-                size="large"
-                variant="contained"
-                startIcon={<PaymentsIcon />}
-                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
-                onClick={() => setStep(3)}
-              >
-                Pay Online - ₹2500
-              </Button>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  startIcon={<PaymentsIcon />}
+                  sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                  onClick={() => setStep(3)}
+                >
+                  Pay Online – ₹2500
+                </Button>
 
-              <Button
-                size="large"
-                variant="contained"
-                startIcon={<PaymentsIcon />}
-                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
-                onClick={() => setStep(3)}
-              >
-                Pay Cash - ₹2500
-              </Button>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="outlined"
+                  startIcon={<PaymentsIcon />}
+                  sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                  onClick={() => setStep(3)}
+                >
+                  Pay at Clinic – ₹2500
+                </Button>
+              </Stack>
 
               <Button
                 variant="text"

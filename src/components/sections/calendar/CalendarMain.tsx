@@ -22,21 +22,18 @@ import {
   FormControl,
   InputLabel,
   Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { DateCalendar, PickersDay } from '@mui/x-date-pickers';
+import { users } from 'data/users';
 import dayjs, { Dayjs } from 'dayjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import NumberTextField from 'components/base/NumberTextField';
-import { users } from 'data/users';
 
 // Patients data
 const patients = [
   {
-    id: 'pat001',
+    id: 'PAT001',
     personalInfo: {
       firstName: 'Amit',
       lastName: 'Sharma',
@@ -47,7 +44,7 @@ const patients = [
     age: '22',
   },
   {
-    id: 'pat002',
+    id: 'PAT002',
     personalInfo: {
       firstName: 'Priya',
       lastName: 'Verma',
@@ -58,7 +55,7 @@ const patients = [
     age: '24',
   },
   {
-    id: 'pat003',
+    id: 'PAT003',
     personalInfo: {
       firstName: 'Rahul',
       lastName: 'Mehta',
@@ -69,7 +66,7 @@ const patients = [
     age: '20',
   },
   {
-    id: 'pat004',
+    id: 'PAT004',
     personalInfo: {
       firstName: 'Sneha',
       lastName: 'Iyer',
@@ -80,7 +77,7 @@ const patients = [
     age: '40',
   },
   {
-    id: 'pat005',
+    id: 'PAT005',
     personalInfo: {
       firstName: 'Rohit',
       lastName: 'Singh',
@@ -150,14 +147,13 @@ const CalendarMain = () => {
   const [mode, setMode] = useState<'Online' | 'Offline'>('Online');
   const [location, setLocation] = useState('');
   const [sessionType, setSessionType] = useState<'New' | 'Follow'>('New');
-  const [agree, setAgree] = useState(false);
+  const [agree, setAgree] = useState(true);
 
   const slots = generateTimeSlots();
   const [blockedSlots, setBlockedSlots] = useState<string[]>([]);
 
   const dateKey = selectedDate?.format('YYYY-MM-DD') ?? '';
 
-  /* ---------- DISABLE DATES ---------- */
   const isDateDisabled = (date: Dayjs) => {
     const today = dayjs().startOf('day');
     if (date.isBefore(today)) return true;
@@ -178,7 +174,18 @@ const CalendarMain = () => {
     return false;
   };
 
-  /* ---------- LOAD BOOKINGS ---------- */
+  const getNextAvailableDate = () => {
+    let d = dayjs().startOf('day');
+    while (isDateDisabled(d)) {
+      d = d.add(1, 'day');
+    }
+    return d;
+  };
+
+  useEffect(() => {
+    setSelectedDate(getNextAvailableDate());
+  }, []);
+
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -197,7 +204,6 @@ const CalendarMain = () => {
   const isSlotBooked = (start: string) =>
     bookings.some((b) => b.date === dateKey && b.start === start) || blockedSlots.includes(start);
 
-  /* ---------- RESET FORM ---------- */
   const resetForm = () => {
     setStep(1);
     setSelectedPatientId('');
@@ -285,43 +291,52 @@ const CalendarMain = () => {
 
           {/* Patient Dropdown */}
           {selectedDate && (
-            <Box mt={3}>
-              <FormControl fullWidth>
-                <InputLabel>Select Patient</InputLabel>
-                <Select
-                  value={selectedPatientId}
-                  onChange={(e) => setSelectedPatientId(e.target.value)}
-                  renderValue={(selected) => {
-                    if (!selected) return 'New Patient';
-                    const patient = patients.find((p) => p.id === selected);
-                    return patient ? (
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Avatar src={patient.personalInfo.profileImage} sx={{ width: 24, height: 24 }} />
-                        <Typography>
-                          {patient.personalInfo.firstName} {patient.personalInfo.lastName}
-                        </Typography>
-                      </Stack>
-                    ) : (
-                      'New Patient'
-                    );
-                  }}
-                >
-                  <MenuItem value="">
-                    <em>New Patient</em>
-                  </MenuItem>
-                  {patients.map((p) => (
-                    <MenuItem key={p.id} value={p.id}>
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Avatar src={p.personalInfo.profileImage} sx={{ width: 24, height: 24 }} />
-                        <Typography>
-                          {p.personalInfo.firstName} {p.personalInfo.lastName}
-                        </Typography>
-                      </Stack>
+            <>
+              <Typography variant="h6">Patient</Typography>
+              <Box mt={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Select Patient</InputLabel>
+                  <Select
+                    value={selectedPatientId}
+                    onChange={(e) => setSelectedPatientId(e.target.value)}
+                    renderValue={(selected) => {
+                      if (!selected) return 'New Patient';
+                      const patient = patients.find((p) => p.id === selected);
+                      return patient ? (
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <Avatar
+                            src={patient.personalInfo.profileImage}
+                            sx={{ width: 24, height: 24 }}
+                          />
+                          <Typography>
+                            {patient.personalInfo.firstName} {patient.personalInfo.lastName}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        'New Patient'
+                      );
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>New Patient</em>
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+                    {patients.map((p) => (
+                      <MenuItem key={p.id} value={p.id}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <Avatar
+                            src={p.personalInfo.profileImage}
+                            sx={{ width: 24, height: 24 }}
+                          />
+                          <Typography>
+                            {p.personalInfo.firstName} {p.personalInfo.lastName}
+                          </Typography>
+                        </Stack>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </>
           )}
         </Grid>
 
@@ -334,22 +349,80 @@ const CalendarMain = () => {
                 {dateKey}
               </Typography>
 
-              <TextField label="Your Name" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
-              <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
-              <NumberTextField label="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} fullWidth />
-              <NumberTextField label="Age" value={age} onChange={(e) => setAge(Number(e.target.value))} fullWidth />
-              <TextField label="Appointment Name" value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
+              <TextField
+                label={
+                  <Typography variant="body2">
+                    Your Name{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+              />
+              <TextField
+                label={
+                  <Typography variant="body2">
+                    Email{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+              />
+              <NumberTextField
+                label={
+                  <Typography variant="body2">
+                    Phone Number{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                fullWidth
+              />
+              <NumberTextField
+                label={
+                  <Typography variant="body2">
+                    Age{' '}
+                    <Typography component="span" color="error">
+                      *
+                    </Typography>
+                  </Typography>
+                }
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value))}
+                fullWidth
+              />
+              <TextField
+                label="Appointment Name"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                fullWidth
+              />
 
               {/* Mode of Visit */}
-              <FormControl component="fieldset">
+              {/* <FormControl component="fieldset">
                 <Typography fontWeight={500} mb={1}>
                   Mode of Visit
                 </Typography>
-                <RadioGroup row value={mode} onChange={(e) => setMode(e.target.value as 'Online' | 'Offline')}>
+                <RadioGroup
+                  row
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as 'Online' | 'Offline')}
+                >
                   <FormControlLabel value="Online" control={<Radio />} label="Online" />
                   <FormControlLabel value="Offline" control={<Radio />} label="Offline" />
                 </RadioGroup>
-              </FormControl>
+              </FormControl> */}
 
               {mode === 'Offline' && (
                 <FormControl fullWidth>
@@ -367,7 +440,11 @@ const CalendarMain = () => {
                 <Typography fontWeight={500} mb={1}>
                   Session Type
                 </Typography>
-                <RadioGroup row value={sessionType} onChange={(e) => setSessionType(e.target.value as 'New' | 'Follow')}>
+                <RadioGroup
+                  row
+                  value={sessionType}
+                  onChange={(e) => setSessionType(e.target.value as 'New' | 'Follow')}
+                >
                   <FormControlLabel value="New" control={<Radio />} label="New" />
                   <FormControlLabel value="Follow" control={<Radio />} label="Follow" />
                 </RadioGroup>
@@ -376,7 +453,7 @@ const CalendarMain = () => {
               {/* Terms */}
               <FormControlLabel
                 control={<Checkbox checked={agree} onChange={(e) => setAgree(e.target.checked)} />}
-                label="I agree to the terms and conditions"
+                label="Walk-In patient"
               />
 
               {/* Time Slots */}
@@ -419,7 +496,7 @@ const CalendarMain = () => {
               <Button
                 size="large"
                 variant="contained"
-                disabled={!name || !title || !slot || !agree}
+                disabled={!name || !email || !age || !phone || !slot}
                 onClick={() => {
                   setStep(2);
                   setDialogOpen(true);
@@ -443,7 +520,14 @@ const CalendarMain = () => {
         maxWidth="sm"
         PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
       >
-        <Box sx={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', p: 3 }}>
+        {/* Header */}
+        <Box
+          sx={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            color: '#fff',
+            p: 3,
+          }}
+        >
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Stack direction="row" spacing={1} alignItems="center">
               <EventAvailableIcon />
@@ -451,24 +535,47 @@ const CalendarMain = () => {
                 Confirm Booking
               </Typography>
             </Stack>
+
             {step === 2 && <Chip label="Review" color="warning" sx={{ fontWeight: 600 }} />}
-            {step === 3 && <Chip icon={<CheckCircleIcon />} label="Paid" color="success" sx={{ fontWeight: 600 }} />}
+            {step === 3 && (
+              <Chip
+                icon={<CheckCircleIcon />}
+                label="Paid"
+                color="success"
+                sx={{ fontWeight: 600 }}
+              />
+            )}
           </Stack>
         </Box>
 
         <Box p={4}>
           {step === 2 && (
             <Stack spacing={4} flexDirection={'column'}>
-              <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, p: 3, bgcolor: 'grey.50' }}>
+              {/* Summary Card */}
+              <Box
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 3,
+                  p: 3,
+                  bgcolor: 'grey.50',
+                }}
+              >
                 <Stack spacing={1.5} flexDirection={'column'}>
                   <Typography fontWeight={700} fontSize={18}>
                     {title}
                   </Typography>
-                  <Typography color="text.secondary">{dayjs(dateKey).format('dddd, MMM D')}</Typography>
+
+                  <Typography color="text.secondary">
+                    {dayjs(dateKey).format('dddd, MMM D')}
+                  </Typography>
+
                   <Typography fontWeight={500}>
                     {slot?.start} – {slot?.end}
                   </Typography>
+
                   <Divider />
+
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Typography fontWeight={600}>Total</Typography>
                     <Typography fontWeight={700} fontSize={18}>
@@ -478,11 +585,35 @@ const CalendarMain = () => {
                 </Stack>
               </Box>
 
-              <Button size="large" variant="contained" startIcon={<PaymentsIcon />} sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }} onClick={() => setStep(3)}>
-                Pay Online - ₹2500
-              </Button>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  startIcon={<PaymentsIcon />}
+                  sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                  onClick={() => setStep(3)}
+                >
+                  Paid Online – ₹2500
+                </Button>
 
-              <Button variant="text" onClick={() => setDialogOpen(false)} sx={{ alignSelf: 'center' }}>
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="outlined"
+                  startIcon={<PaymentsIcon />}
+                  sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                  onClick={() => setStep(3)}
+                >
+                  Collected Cash – ₹2500
+                </Button>
+              </Stack>
+
+              <Button
+                variant="text"
+                onClick={() => setDialogOpen(false)}
+                sx={{ alignSelf: 'center' }}
+              >
                 Back
               </Button>
             </Stack>
@@ -491,13 +622,22 @@ const CalendarMain = () => {
           {step === 3 && (
             <Stack spacing={4} alignItems="center" flexDirection={'column'}>
               <CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
+
               <Typography variant="h6" fontWeight={700}>
                 Payment Successful
               </Typography>
+
               <Typography color="text.secondary" textAlign="center">
                 Your appointment has been reserved and confirmed.
               </Typography>
-              <Button size="large" variant="contained" fullWidth sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }} onClick={confirmBooking}>
+
+              <Button
+                size="large"
+                variant="contained"
+                fullWidth
+                sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                onClick={confirmBooking}
+              >
                 Confirm Booking
               </Button>
             </Stack>

@@ -1,17 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Button,
-  Chip,
-  Dialog,
-  Stack,
-  Typography,
-} from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import { Button, Chip, Dialog, Divider, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import dayjs from 'dayjs';
 import { type Deal as DealType } from 'data/crm/lead-details';
+import dayjs from 'dayjs';
 import useNumberFormat from 'hooks/useNumberFormat';
 import paths from 'routes/paths';
 
@@ -42,10 +39,7 @@ const Deal = ({ deal }: { deal: DealType }) => {
       sx={{
         p: 2,
         borderRadius: 2,
-        bgcolor:
-          deal.closingDate === 'closed'
-            ? 'background.elevation2'
-            : 'background.elevation1',
+        bgcolor: deal.closingDate === 'closed' ? 'background.elevation2' : 'background.elevation1',
       }}
     >
       <Stack direction="column" gap={3}>
@@ -79,12 +73,7 @@ const Deal = ({ deal }: { deal: DealType }) => {
                 useGrouping: true,
               })}
             </Typography>
-            <Typography
-              component={Stack}
-              variant="body2"
-              gap={0.5}
-              sx={{ alignItems: 'center' }}
-            >
+            <Typography component={Stack} variant="body2" gap={0.5} sx={{ alignItems: 'center' }}>
               <Box component="span" sx={{ fontWeight: 600 }}>
                 Last booking Date:
               </Box>{' '}
@@ -115,17 +104,13 @@ const Deal = ({ deal }: { deal: DealType }) => {
                 phase.status === 'done'
                   ? 'success'
                   : phase.status === 'ongoing'
-                  ? 'primary'
-                  : 'neutral'
+                    ? 'primary'
+                    : 'neutral'
               }
               fullWidth={false}
               endIcon={
                 phase.status === 'done' && (
-                  <span
-                    style={{ display: 'inline-flex', alignItems: 'center' }}
-                  >
-                    ✓
-                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center' }}>✓</span>
                 )
               }
               sx={{ height: 46 }}
@@ -147,31 +132,97 @@ const Deal = ({ deal }: { deal: DealType }) => {
       </Stack>
 
       {/* Confirmation Dialog */}
-      <Dialog open={open} onClose={handleClose}>
-        <Box p={3} minWidth={320}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{ sx: { borderRadius: 4, overflow: 'hidden' } }}
+      >
+        <Box p={3}>
           {step === 1 && (
             <>
-              <Typography variant="h6" mb={2}>
-                Confirm Reschedule
-              </Typography>
+              {/* Header */}
+              <Box
+                sx={{
+                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                  color: '#fff',
+                  p: 3,
+                  borderRadius: 3,
+                  mb: 3,
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <EventAvailableIcon />
+                  <Typography variant="h6" fontWeight={700}>
+                    Confirm Reschedule
+                  </Typography>
+                </Stack>
+              </Box>
 
-              <Typography mb={3}>
-                Are you sure you want to reschedule for{' '}
-                <strong>
-                  {currencyFormat(deal.budget, {
-                    style: 'currency',
-                    maximumFractionDigits: 0,
-                  })}
-                </strong>
-                ?
-              </Typography>
+              {/* Content */}
+              <Stack spacing={4} flexDirection={'column'}>
+                {/* Summary Card */}
+                <Box
+                  sx={{
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 3,
+                    p: 3,
+                    bgcolor: 'grey.50',
+                  }}
+                >
+                  <Stack spacing={1.5} flexDirection={'column'}>
+                    <Typography fontWeight={700} fontSize={18}>
+                      Reschedule Appointment
+                    </Typography>
 
-              <Stack direction="row" spacing={1}>
-                <Button variant="outlined" fullWidth onClick={handleClose}>
+                    <Typography color="text.secondary">
+                      Please confirm your reschedule payment
+                    </Typography>
+
+                    <Divider />
+
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Typography fontWeight={600}>Amount</Typography>
+                      <Typography fontWeight={700} fontSize={18}>
+                        {currencyFormat(deal.budget, {
+                          style: 'currency',
+                          maximumFractionDigits: 0,
+                        })}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Box>
+
+                {/* Payment Options */}
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    fullWidth
+                    size="large"
+                    variant="contained"
+                    startIcon={<PaymentsIcon />}
+                    sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                    onClick={handlePayNow}
+                  >
+                    Pay Online
+                  </Button>
+
+                  <Button
+                    fullWidth
+                    size="large"
+                    variant="outlined"
+                    startIcon={<PaymentsIcon />}
+                    sx={{ borderRadius: 3, py: 1.5, fontWeight: 600 }}
+                    onClick={handlePayNow}
+                  >
+                    Pay at Clinic
+                  </Button>
+                </Stack>
+
+                {/* Footer */}
+                <Button variant="text" onClick={handleClose} sx={{ alignSelf: 'center' }}>
                   Cancel
-                </Button>
-                <Button variant="contained" fullWidth onClick={handlePayNow}>
-                  Pay Now
                 </Button>
               </Stack>
             </>
@@ -179,21 +230,25 @@ const Deal = ({ deal }: { deal: DealType }) => {
 
           {step === 2 && (
             <>
-              <Typography variant="h6" mb={3} color="success.main">
-                Payment Successful 🎉
-              </Typography>
+              <Stack spacing={4} alignItems="center" flexDirection={'column'}>
+                <CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
 
-              <Stack direction="row" spacing={1}>
-                <Button variant="outlined" fullWidth onClick={handleClose}>
-                  Close
-                </Button>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleConfirmReschedule}
-                >
-                  Confirm Reschedule
-                </Button>
+                <Typography variant="h6" fontWeight={700}>
+                  Payment Successful
+                </Typography>
+
+                <Typography color="text.secondary" textAlign="center">
+                  Your appointment has been rescheduled.
+                </Typography>
+
+                <Stack direction="row" spacing={1}>
+                  <Button variant="outlined" fullWidth onClick={handleClose}>
+                    Close
+                  </Button>
+                  <Button variant="contained" fullWidth onClick={handleConfirmReschedule}>
+                    Confirm Reschedule
+                  </Button>
+                </Stack>
               </Stack>
             </>
           )}
