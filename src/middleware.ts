@@ -12,6 +12,8 @@ export default withAuth({
 
       if (
         pathname.startsWith('/anonymous-booking') ||
+        pathname.startsWith('/authentication/default/jwt/login') ||
+        pathname.startsWith('/authentication/default/jwt/login-doctor') ||
         pathname.startsWith('/authentication/default/logged-out')
       ) {
         return true;
